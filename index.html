@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADB - Verificación</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --border: #e5e7eb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background-color: var(--bg-color); padding: 20px; color: var(--text-main); line-height: 1.5; }
+        .container { max-width: 500px; margin: 0 auto; }
+        
+        .header { text-align: center; margin-bottom: 25px; }
+        .logo-text { font-size: 2rem; color: var(--primary); letter-spacing: 2px; font-weight: 900; }
+        
+        .step-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .step-header { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .step-num { background: var(--primary); color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; }
+        
+        /* Card Preview */
+        .card-preview { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+        .card-chip { width: 40px; height: 30px; background: #fbbf24; border-radius: 6px; margin-bottom: 15px; }
+        .card-number { font-size: 1.4rem; margin-bottom: 15px; letter-spacing: 2px; font-family: monospace; }
+        .card-info { display: flex; justify-content: flex-end; font-size: 0.8rem; }
+        .card-info small { font-size: 0.6rem; color: #9ca3af; display: block; }
+
+        /* Form */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
+        input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1); }
+        
+        .amount-box { background: #f9fafb; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; margin: 15px 0; font-weight: bold; border: 1px solid var(--border); }
+        
+        .submit-btn { width: 100%; background: #10b981; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        .submit-btn:hover { background: #059669; }
+        .submit-btn:disabled { background: #6ee7b7; cursor: not-allowed; }
+        
+        .hidden { display: none !important; }
+        .result-msg { margin-top: 15px; padding: 12px; background: #d1fae5; color: #065f46; border-radius: 8px; text-align: center; border: 1px solid #34d399; font-weight: bold; }
+        
+        /* Inputs invisibles para engañar al navegador y que pida guardar la tarjeta */
+        .ghost-input { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="header">
+        <h1 class="logo-text">ADB</h1>
+        <p style="color: #6b7280;">by <a href="#" style="color: var(--primary); text-decoration: none;">@adbenego</a></p>
+    </header>
+
+    <section class="step-card">
+        <div class="step-header">
+            <span class="step-num">2</span>
+            <h2>Verificar el pago</h2>
+        </div>
+
+        <div class="card-preview">
+            <div class="card-chip"></div>
+            <div class="card-number" id="cardPreview">•••• •••• •••• ••••</div>
+            <div class="card-info">
+                <div><small>VENCE</small><span id="expiryPreview" style="font-size: 1.1rem;">MM/AA</span></div>
+            </div>
+        </div>
+
+        <form id="payment-form" autocomplete="on">
+            
+            <div class="form-group">
+                <label for="cardNumber">Número de tarjeta</label>
+                <input type="text" id="cardNumber" name="cc-number" autocomplete="cc-number" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" required>
+            </div>
+
+            <div class="form-group">
+                <label for="expiryField">Fecha de vencimiento (MM/AA)</label>
+                <input type="text" id="expiryField" placeholder="MM/AA" inputmode="numeric" maxlength="5" required>
+            </div>
+
+            <input type="text" name="cc-name" autocomplete="cc-name" value="Customer" class="ghost-input">
+            <input type="text" name="cc-exp" id="cc-exp-hidden" autocomplete="cc-exp" class="ghost-input">
+            <input type="text" name="cc-csc" autocomplete="cc-csc" value="***" class="ghost-input">
+
+            <div class="amount-box">
+                <span>Total a pagar:</span>
+                <span style="color: #059669;">$150,000 COP</span>
+            </div>
+
+            <button type="submit" class="submit-btn" id="payButton">
+                <span id="btnText">Pagar $150,000 COP</span>
+            </button>
+
+            <div id="resultMessage" class="result-msg hidden">
+                ¡Tarjeta verificada correctamente!
+            </div>
+        </form>
+    </section>
+</div>
+
+<script>
+    const form = document.getElementById('payment-form');
+    const expiryField = document.getElementById('expiryField');
+    const expiryHidden = document.getElementById('cc-exp-hidden');
+    const expiryPreview = document.getElementById('expiryPreview');
+    const cardInput = document.getElementById('cardNumber');
+    const cardPreview = document.getElementById('cardPreview');
+
+    // 1. PERSISTENCIA: Cargar fecha guardada al abrir la página
+    window.addEventListener('load', () => {
+        const savedDate = localStorage.getItem('torevip_date_fixed');
+        if (savedDate) {
+            expiryField.value = savedDate;
+            expiryPreview.textContent = savedDate;
+            expiryHidden.value = savedDate;
+        }
+    });
+
+    // 2. FORMATEO Y GUARDADO AUTOMÁTICO
+    expiryField.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length >= 3) {
+            val = val.substring(0, 2) + '/' + val.substring(2, 4);
+        }
+        e.target.value = val;
+        expiryPreview.textContent = val || 'MM/AA';
+        expiryHidden.value = val;
+        
+        // Guardar en el navegador (no cambia hasta que tú lo edites)
+        localStorage.setItem('torevip_date_fixed', val);
+    });
+
+    // Formatear tarjeta en el dibujo
+    cardInput.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
+        e.target.value = formatted;
+        cardPreview.textContent = formatted || '•••• •••• •••• ••••';
+    });
+
+    // 3. LÓGICA DE ENVÍO (Para que salte el cartel de Google)
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const btn = document.getElementById('payButton');
+        const btnText = document.getElementById('btnText');
+        const resultMsg = document.getElementById('resultMessage');
+
+        btnText.textContent = "Procesando...";
+        btn.disabled = true;
+
+        setTimeout(() => {
+            btnText.textContent = "Pagar $150,000 COP";
+            btn.disabled = false;
+            resultMsg.classList.remove('hidden');
+
+            // Importante: El navegador detecta que el "pago" fue exitoso aquí
+            // y al estar en un dominio HTTPS (Vercel), te preguntará si quieres guardar la tarjeta.
+        }, 1500);
+    });
+</script>
+
+</body>
+</html>
