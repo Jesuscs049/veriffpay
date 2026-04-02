@@ -3,51 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADB - Verificación</title>
+    <title>ADB - ASOCIACIÓN</title>
     <style>
         :root {
             --primary: #4f46e5;
+            --primary-hover: #4338ca;
             --bg-color: #f3f4f6;
             --card-bg: #ffffff;
             --text-main: #1f2937;
+            --text-muted: #6b7280;
             --border: #e5e7eb;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background-color: var(--bg-color); padding: 20px; color: var(--text-main); line-height: 1.5; }
-        .container { max-width: 500px; margin: 0 auto; }
-        
-        .header { text-align: center; margin-bottom: 25px; }
-        .logo-text { font-size: 2rem; color: var(--primary); letter-spacing: 2px; font-weight: 900; }
-        
-        .step-card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .step-header { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .step-num { background: var(--primary); color: white; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; }
-        
-        /* Card Preview */
-        .card-preview { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
-        .card-chip { width: 40px; height: 30px; background: #fbbf24; border-radius: 6px; margin-bottom: 15px; }
-        .card-number { font-size: 1.4rem; margin-bottom: 15px; letter-spacing: 2px; font-family: monospace; }
-        .card-info { display: flex; justify-content: flex-end; font-size: 0.8rem; }
-        .card-info small { font-size: 0.6rem; color: #9ca3af; display: block; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
 
-        /* Form */
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.9rem; }
-        input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1); }
+        /* Header */
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo-text { font-size: 2.2rem; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
+        .logo-sub { display: block; font-size: 0.9rem; font-weight: bold; color: var(--text-muted); margin-bottom: 5px; }
+        .credits { font-size: 0.9rem; color: var(--text-muted); }
+        .credits a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+        /* Step Cards */
+        .step-card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .step-header { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
+        .step-num { background: var(--primary); color: white; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; flex-shrink: 0; }
+        .step-header h2 { font-size: 1.25rem; flex-grow: 1; font-weight: 700; }
         
-        .amount-box { background: #f9fafb; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; margin: 15px 0; font-weight: bold; border: 1px solid var(--border); }
+        .toggle-btn { background: #eff6ff; border: 1px solid #dbeafe; color: var(--primary); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+
+        /* Step 1 Elements */
+        .action-btn { display: block; text-align: center; width: 100%; padding: 14px; border-radius: 10px; text-decoration: none; font-weight: 700; margin: 15px 0; transition: all 0.2s; }
+        .action-btn.primary { background: var(--primary); color: white; }
+        .info-card { background: #f9fafb; border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-top: 20px; }
+        .info-card h4 { margin-bottom: 8px; color: var(--text-main); }
+        .info-text { font-size: 0.9rem; color: #4b5563; }
+        .gif-wrapper img { width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid var(--border); }
+
+        /* Card Preview (Replica) */
+        .card-preview { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; position: relative; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
+        .card-chip { width: 45px; height: 35px; background: linear-gradient(135deg, #fbbf24, #d97706); border-radius: 6px; margin-bottom: 20px; }
+        .card-number { font-size: 1.5rem; letter-spacing: 3px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
+        .card-info { display: flex; justify-content: space-between; align-items: flex-end; }
+        .card-info .label { font-size: 0.65rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .card-info .value { font-size: 1rem; font-weight: 600; }
+
+        /* Form Styling */
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #374151; }
+        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border 0.2s; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
         
-        .submit-btn { width: 100%; background: #10b981; color: white; border: none; padding: 16px; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        .submit-btn:hover { background: #059669; }
-        .submit-btn:disabled { background: #6ee7b7; cursor: not-allowed; }
-        
+        .amount-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 16px; border-radius: 10px; margin: 20px 0; border: 1px dashed #cbd5e1; }
+        .amount-box strong { font-size: 1.2rem; color: #059669; }
+
+        .submit-btn { width: 100%; background: #10b981; color: white; border: none; padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 10px; cursor: pointer; }
+        .submit-btn:disabled { background: #6ee7b7; }
+
         .hidden { display: none !important; }
-        .result-msg { margin-top: 15px; padding: 12px; background: #d1fae5; color: #065f46; border-radius: 8px; text-align: center; border: 1px solid #34d399; font-weight: bold; }
+        .result-msg { margin-top: 15px; padding: 12px; background: #dcfce7; color: #166534; border-radius: 8px; text-align: center; font-weight: 600; }
         
-        /* Inputs invisibles para engañar al navegador y que pida guardar la tarjeta */
-        .ghost-input { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+        /* Ocultos para Autocompletar */
+        .ghost-fields { position: absolute; left: -9999px; opacity: 0; height: 0; }
     </style>
 </head>
 <body>
@@ -55,88 +74,154 @@
 <div class="container">
     <header class="header">
         <h1 class="logo-text">ADB</h1>
-        <p style="color: #6b7280;">by <a href="#" style="color: var(--primary); text-decoration: none;">@adbenego</a></p>
+        <span class="logo-sub">ASOCIACIÓN</span>
+        <p class="credits">by <a href="https://t.me/toretuoficial" target="_blank">@adbenego</a></p>
     </header>
 
     <section class="step-card">
         <div class="step-header">
+            <span class="step-num">1</span>
+            <h2>Añade un perfil de pagos</h2>
+        </div>
+        <div class="step-body">
+            <p style="font-size: 0.95rem;">Crea o actualiza tu perfil de pagos en Google Pay:</p>
+            <a href="https://payments.google.com/gp/w/u/0/home/settings" target="_blank" class="action-btn primary">Añadir perfil de pagos</a>
+            
+            <div class="info-card">
+                <h4>Instrucciones</h4>
+                <div class="gif-wrapper">
+                    <img src="https://via.placeholder.com/600x300?text=GIF+PAGOS+AQUÍ" alt="Ejemplo de pagos">
+                </div>
+                <p class="info-text">Si es cuenta nueva sin asociar ningún medio puedes agregar sin problema. Si es correo antiguo es preferible <strong>borrar perfil</strong>.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="step-card">
+        <div class="step-header">
             <span class="step-num">2</span>
-            <h2>Verificar el pago</h2>
+            <h2 id="stepTitle">Verificar el pago - Nueva versión</h2>
+            <button type="button" class="toggle-btn" id="versionToggle">Vieja versión</button>
         </div>
 
         <div class="card-preview">
             <div class="card-chip"></div>
             <div class="card-number" id="cardPreview">•••• •••• •••• ••••</div>
             <div class="card-info">
-                <div><small>VENCE</small><span id="expiryPreview" style="font-size: 1.1rem;">MM/AA</span></div>
+                <div id="holderSection" class="hidden">
+                    <span class="label">TITULAR</span>
+                    <span class="value" id="holderPreview">TU NOMBRE</span>
+                </div>
+                <div>
+                    <span class="label">VENCE</span>
+                    <span class="value" id="expiryPreview">MM/AA</span>
+                </div>
             </div>
         </div>
 
         <form id="payment-form" autocomplete="on">
-            
             <div class="form-group">
                 <label for="cardNumber">Número de tarjeta</label>
                 <input type="text" id="cardNumber" name="cc-number" autocomplete="cc-number" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" required>
             </div>
 
-            <div class="form-group">
-                <label for="expiryField">Fecha de vencimiento (MM/AA)</label>
-                <input type="text" id="expiryField" placeholder="MM/AA" inputmode="numeric" maxlength="5" required>
+            <div id="newVersionInputs">
+                <div class="form-group">
+                    <label for="expiryField">Vencimiento (MM/AA)</label>
+                    <input type="text" id="expiryField" placeholder="02/27" inputmode="numeric" maxlength="5" required>
+                </div>
             </div>
 
-            <input type="text" name="cc-name" autocomplete="cc-name" value="Customer" class="ghost-input">
-            <input type="text" name="cc-exp" id="cc-exp-hidden" autocomplete="cc-exp" class="ghost-input">
-            <input type="text" name="cc-csc" autocomplete="cc-csc" value="***" class="ghost-input">
+            <div id="oldVersionInputs" class="hidden">
+                <div class="form-group">
+                    <label for="cardHolder">Nombre del titular</label>
+                    <input type="text" id="cardHolder" name="cc-name" autocomplete="cc-name" placeholder="JUAN PEREZ">
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Mes</label>
+                        <select id="expMonth"><option value="">MM</option><option value="01">01</option><option value="12">12</option></select>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Año</label>
+                        <select id="expYear"><option value="">AA</option><option value="25">2025</option><option value="30">2030</option></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ghost-fields">
+                <input type="text" name="cc-exp" id="cc-exp-hidden" autocomplete="cc-exp">
+                <input type="text" name="cc-csc" autocomplete="cc-csc" value="123">
+            </div>
 
             <div class="amount-box">
                 <span>Total a pagar:</span>
-                <span style="color: #059669;">$150,000 COP</span>
+                <strong>$150,000 COP</strong>
             </div>
 
             <button type="submit" class="submit-btn" id="payButton">
                 <span id="btnText">Pagar $150,000 COP</span>
             </button>
-
-            <div id="resultMessage" class="result-msg hidden">
-                ¡Tarjeta verificada correctamente!
-            </div>
+            <div id="resultMessage" class="result-msg hidden">¡Procesado con éxito!</div>
         </form>
+    </section>
+
+    <section class="step-card">
+        <div class="step-header">
+            <span class="step-num">3</span>
+            <h2>Completar pago oficial</h2>
+        </div>
+        <p style="font-size: 0.9rem; margin-bottom: 15px;">Continúa en el enlace oficial una vez verificado:</p>
+        <a href="#" class="action-btn primary" style="background: #6366f1;">Ir a la página de pago</a>
     </section>
 </div>
 
 <script>
-    const form = document.getElementById('payment-form');
+    // --- LÓGICA DE INTERFAZ (RÉPLICA) ---
+    const versionToggle = document.getElementById('versionToggle');
+    const newInputs = document.getElementById('newVersionInputs');
+    const oldInputs = document.getElementById('oldVersionInputs');
+    const holderSection = document.getElementById('holderSection');
+    const stepTitle = document.getElementById('stepTitle');
+    let isNewVersion = true;
+
+    versionToggle.addEventListener('click', () => {
+        isNewVersion = !isNewVersion;
+        newInputs.classList.toggle('hidden');
+        oldInputs.classList.toggle('hidden');
+        holderSection.classList.toggle('hidden');
+        stepTitle.textContent = isNewVersion ? "Verificar el pago - Nueva versión" : "Verificar el pago - Vieja versión";
+        versionToggle.textContent = isNewVersion ? "Vieja versión" : "Nueva versión";
+    });
+
+    // --- PERSISTENCIA Y FORMATEO ---
     const expiryField = document.getElementById('expiryField');
-    const expiryHidden = document.getElementById('cc-exp-hidden');
     const expiryPreview = document.getElementById('expiryPreview');
+    const expiryHidden = document.getElementById('cc-exp-hidden');
     const cardInput = document.getElementById('cardNumber');
     const cardPreview = document.getElementById('cardPreview');
 
-    // 1. PERSISTENCIA: Cargar fecha guardada al abrir la página
+    // Cargar fecha guardada
     window.addEventListener('load', () => {
-        const savedDate = localStorage.getItem('torevip_date_fixed');
-        if (savedDate) {
-            expiryField.value = savedDate;
-            expiryPreview.textContent = savedDate;
-            expiryHidden.value = savedDate;
+        const saved = localStorage.getItem('torevip_date');
+        if (saved) {
+            expiryField.value = saved;
+            expiryPreview.textContent = saved;
+            expiryHidden.value = saved;
         }
     });
 
-    // 2. FORMATEO Y GUARDADO AUTOMÁTICO
+    // Formatear y Guardar Fecha (PERSISTENTE)
     expiryField.addEventListener('input', (e) => {
         let val = e.target.value.replace(/\D/g, '');
-        if (val.length >= 3) {
-            val = val.substring(0, 2) + '/' + val.substring(2, 4);
-        }
+        if (val.length >= 3) val = val.substring(0, 2) + '/' + val.substring(2, 4);
         e.target.value = val;
         expiryPreview.textContent = val || 'MM/AA';
         expiryHidden.value = val;
-        
-        // Guardar en el navegador (no cambia hasta que tú lo edites)
-        localStorage.setItem('torevip_date_fixed', val);
+        localStorage.setItem('torevip_date', val);
     });
 
-    // Formatear tarjeta en el dibujo
+    // Formatear Tarjeta
     cardInput.addEventListener('input', (e) => {
         let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
         let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
@@ -144,27 +229,22 @@
         cardPreview.textContent = formatted || '•••• •••• •••• ••••';
     });
 
-    // 3. LÓGICA DE ENVÍO (Para que salte el cartel de Google)
-    form.addEventListener('submit', (e) => {
+    // --- LÓGICA DE PAGO ---
+    document.getElementById('payment-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        const btn = document.getElementById('payButton');
         const btnText = document.getElementById('btnText');
-        const resultMsg = document.getElementById('resultMessage');
-
+        const msg = document.getElementById('resultMessage');
+        
         btnText.textContent = "Procesando...";
-        btn.disabled = true;
+        document.getElementById('payButton').disabled = true;
 
         setTimeout(() => {
             btnText.textContent = "Pagar $150,000 COP";
-            btn.disabled = false;
-            resultMsg.classList.remove('hidden');
-
-            // Importante: El navegador detecta que el "pago" fue exitoso aquí
-            // y al estar en un dominio HTTPS (Vercel), te preguntará si quieres guardar la tarjeta.
-        }, 1500);
+            document.getElementById('payButton').disabled = false;
+            msg.classList.remove('hidden');
+            // En HTTPS (Vercel), esto disparará el guardado de tarjeta del navegador
+        }, 2000);
     });
 </script>
-
 </body>
 </html>
