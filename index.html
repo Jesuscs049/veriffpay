@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADB Multi Card Adder</title>
+<title>ADB Matrix</title>
 
 <style>
 body {
-    font-family: system-ui;
-    background: linear-gradient(135deg,#4f46e5,#9333ea);
-    color: white;
+    background: #000;
+    color: #00ff9f;
+    font-family: "Courier New", monospace;
     padding: 20px;
 }
 
@@ -19,62 +19,88 @@ body {
 }
 
 .title {
-    text-align:center;
-    font-size:28px;
-    font-weight:900;
-    margin-bottom:20px;
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ff9f;
 }
 
+/* CARDS */
 .card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px);
-    padding:20px;
-    border-radius:14px;
-    margin-bottom:20px;
+    border: 1px solid #00ff9f;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
 }
 
+/* INPUTS */
 input, textarea {
-    width:100%;
-    padding:12px;
-    border-radius:8px;
-    border:none;
-    margin-bottom:10px;
+    width: 100%;
+    background: black;
+    border: 1px solid #00ff9f;
+    color: #00ff9f;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
+/* BOTONES */
 button {
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
+    background: black;
+    border: 1px solid #00ff9f;
+    color: #00ff9f;
+    padding: 10px;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-.btn-main {background:#22c55e;color:black;width:100%;}
-.btn-blue {background:#4f46e5;color:white;width:100%;}
-.btn-red {background:#ef4444;color:white;}
-.btn-yellow {background:#eab308;color:black;}
+button:hover {
+    background: #00ff9f;
+    color: black;
+}
 
-.card-item {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background: rgba(255,255,255,0.1);
-    padding:12px;
-    border-radius:8px;
-    margin-bottom:10px;
+/* LISTA SCROLL */
+.list {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #00ff9f;
+    padding: 10px;
+}
+
+/* Scroll estilo Matrix */
+.list::-webkit-scrollbar {
+    width: 6px;
+}
+.list::-webkit-scrollbar-thumb {
+    background: #00ff9f;
+}
+
+/* ITEMS */
+.item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
 }
 
 .actions {
-    display:flex;
-    gap:10px;
-    margin-top:10px;
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.small {
-    font-size:12px;
-    opacity:0.7;
+a {
+    display:block;
+    text-align:center;
+    border:1px solid #00ff9f;
+    padding:10px;
+    margin-bottom:10px;
+    text-decoration:none;
+    color:#00ff9f;
 }
 
+a:hover {
+    background:#00ff9f;
+    color:black;
+}
 </style>
 </head>
 
@@ -82,31 +108,26 @@ button {
 
 <div class="container">
 
-<div class="title">ADB Multi Card Adder</div>
+<div class="title">ADB MATRIX // MULTI CARD</div>
 
-<!-- BOTONES SUPERIORES -->
+<!-- BOTONES -->
 <div class="card">
-    <button class="btn-blue" onclick="window.open('https://payments.google.com/gp/w/home/settings')">
-        ➜ Añadir Perfil de Pagos
-    </button>
+<a href="https://payments.google.com/gp/w/home/settings" target="_blank">
+Añadir perfil de pagos
+</a>
 
-    <br><br>
-
-    <button class="btn-blue" onclick="window.open('https://www.purevpn.com/order-v3')">
-        ➜ Ir a la Página de Pago
-    </button>
+<a href="https://www.purevpn.com/order-v3" target="_blank">
+Ir a la página de pago
+</a>
 </div>
 
-<!-- FORMULARIO -->
+<!-- FORM -->
 <div class="card">
 <form id="form">
-
-<input id="cardNumber" placeholder="Número de tarjeta" autocomplete="cc-number">
+<input id="num" placeholder="Card Number" autocomplete="cc-number">
 <input id="exp" placeholder="MM/YY" autocomplete="cc-exp">
 <input id="cvc" placeholder="CVC" autocomplete="cc-csc">
-
-<button class="btn-main" type="submit">PAGAR</button>
-
+<button type="submit">EXECUTE PAYMENT</button>
 </form>
 </div>
 
@@ -114,16 +135,14 @@ button {
 <div class="card">
 
 <textarea id="input" placeholder="numero|mes|año"></textarea>
-<button class="btn-blue" onclick="addCards()">Agregar tarjetas</button>
+<button onclick="add()">ADD CARDS</button>
 
-<div id="list"></div>
+<div class="list" id="list"></div>
 
 <div class="actions">
-    <button class="btn-yellow" onclick="restore()">Restaurar</button>
-    <button class="btn-red" onclick="clearAll()">Eliminar todo</button>
+<button onclick="restore()">RESTORE</button>
+<button onclick="clearAll()">DELETE ALL</button>
 </div>
-
-<div class="small">Formato: 4111111111111111|12|2026</div>
 
 </div>
 
@@ -144,18 +163,18 @@ function render(){
 
     cards.forEach((c,i)=>{
         const div = document.createElement("div");
-        div.className="card-item";
+        div.className="item";
 
         div.innerHTML = `
-            <span>****${c.number.slice(-4)} | ${c.exp}</span>
-            <button onclick="useCard(${i})">USAR</button>
+            <span>${c.number.slice(0,6)}******${c.number.slice(-4)}</span>
+            <button onclick="use(${i})">USE</button>
         `;
 
         list.appendChild(div);
     });
 }
 
-function addCards(){
+function add(){
     const lines = document.getElementById("input").value.split("\n");
 
     lines.forEach(l=>{
@@ -173,10 +192,10 @@ function addCards(){
     render();
 }
 
-function useCard(i){
+function use(i){
     const c = cards[i];
 
-    document.getElementById("cardNumber").value = c.number;
+    document.getElementById("num").value = c.number;
     document.getElementById("exp").value = c.exp;
     document.getElementById("cvc").value = "123";
 }
@@ -184,11 +203,8 @@ function useCard(i){
 document.getElementById("form").addEventListener("submit", e=>{
     e.preventDefault();
 
-    const num = document.getElementById("cardNumber").value;
+    const num = document.getElementById("num").value;
 
-    if(!num) return;
-
-    // eliminar tarjeta usada
     const index = cards.findIndex(c => c.number === num);
 
     if(index !== -1){
