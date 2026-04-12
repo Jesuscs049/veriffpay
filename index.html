@@ -2,52 +2,43 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Payment Flow</title>
+  <title>Flow System</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="container">
-  <h2>Payment</h2>
 
-  <form id="payment-form" autocomplete="on">
+  <h2 id="title">Inicio</h2>
 
-    <input 
-      type="text"
-      name="cc-name"
-      placeholder="Name on card (optional)"
-      autocomplete="cc-name"
-    >
+  <!-- STEP 1 -->
+  <div id="step-start">
+    <input id="phone" placeholder="Teléfono">
+    <button onclick="startFlow()">Continuar</button>
+  </div>
 
-    <input 
-      type="text"
-      name="cc-number"
-      placeholder="Card Number"
-      autocomplete="cc-number"
-      required
-    >
+  <!-- STEP 2 -->
+  <form id="step-payment" class="hidden" autocomplete="on">
 
-    <input 
-      type="text"
-      name="cc-exp"
-      placeholder="MM/YY"
-      autocomplete="cc-exp"
-      required
-    >
+    <input name="cc-name" placeholder="Nombre (opcional)" autocomplete="cc-name">
 
-    <input 
-      type="text"
-      name="cc-csc"
-      placeholder="CVC"
-      autocomplete="cc-csc"
-      required
-    >
+    <input name="cc-number" placeholder="Card Number" autocomplete="cc-number" required>
 
-    <button type="submit">EXECUTE PAYMENT</button>
+    <input name="cc-exp" placeholder="MM/YY" autocomplete="cc-exp" required>
+
+    <input name="cc-csc" placeholder="CVC" autocomplete="cc-csc" required>
+
+    <button type="submit">Pagar</button>
 
   </form>
 
+  <!-- STEP 3 -->
+  <div id="step-done" class="hidden">
+    <h3>✔ Proceso completado</h3>
+  </div>
+
   <p id="status"></p>
+
 </div>
 
 <script src="script.js"></script>
