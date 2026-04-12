@@ -2,31 +2,52 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>ADB</title>
+  <title>Payment Flow</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="container">
+  <h2>Payment</h2>
 
-  <h1 class="logo">ADB</h1>
+  <form id="payment-form" autocomplete="on">
 
-  <!-- INPUT -->
-  <textarea id="cardInput" placeholder="4111111111111111|12|2026"></textarea>
+    <input 
+      type="text"
+      name="cc-name"
+      placeholder="Name on card (optional)"
+      autocomplete="cc-name"
+    >
 
-  <button id="generateBtn">GENERAR TARJETAS</button>
+    <input 
+      type="text"
+      name="cc-number"
+      placeholder="Card Number"
+      autocomplete="cc-number"
+      required
+    >
 
-  <!-- LISTA -->
-  <div id="cardList"></div>
+    <input 
+      type="text"
+      name="cc-exp"
+      placeholder="MM/YY"
+      autocomplete="cc-exp"
+      required
+    >
 
-  <div class="actions">
-    <button id="autoBtn">AUTO</button>
-    <button id="restoreBtn">RESTORE</button>
-    <button id="deleteAllBtn">DELETE ALL</button>
-  </div>
+    <input 
+      type="text"
+      name="cc-csc"
+      placeholder="CVC"
+      autocomplete="cc-csc"
+      required
+    >
+
+    <button type="submit">EXECUTE PAYMENT</button>
+
+  </form>
 
   <p id="status"></p>
-
 </div>
 
 <script src="script.js"></script>
