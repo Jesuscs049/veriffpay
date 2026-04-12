@@ -3,49 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADB - Pago</title>
+<title>ADB Multi Card Adder</title>
 
 <style>
 body {
     font-family: system-ui;
-    background: #f3f4f6;
+    background: linear-gradient(135deg,#4f46e5,#9333ea);
+    color: white;
     padding: 20px;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 700px;
     margin: auto;
 }
 
-.card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
+.title {
+    text-align:center;
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:20px;
 }
 
-input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
+.card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    padding:20px;
+    border-radius:14px;
+    margin-bottom:20px;
+}
+
+input, textarea {
+    width:100%;
+    padding:12px;
+    border-radius:8px;
+    border:none;
+    margin-bottom:10px;
 }
 
 button {
-    width: 100%;
-    padding: 12px;
-    background: #4f46e5;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
 }
 
+.btn-main {background:#22c55e;color:black;width:100%;}
+.btn-blue {background:#4f46e5;color:white;width:100%;}
+.btn-red {background:#ef4444;color:white;}
+.btn-yellow {background:#eab308;color:black;}
+
 .card-item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background: rgba(255,255,255,0.1);
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:10px;
+}
+
+.actions {
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+}
+
+.small {
+    font-size:12px;
+    opacity:0.7;
 }
 
 </style>
@@ -55,34 +82,61 @@ button {
 
 <div class="container">
 
+<div class="title">ADB Multi Card Adder</div>
+
+<!-- BOTONES SUPERIORES -->
 <div class="card">
-<h2>Formulario de Pago</h2>
+    <button class="btn-blue" onclick="window.open('https://payments.google.com/gp/w/home/settings')">
+        ➜ Añadir Perfil de Pagos
+    </button>
 
-<form id="paymentForm">
+    <br><br>
 
-<input id="cardNumber" placeholder="Número de tarjeta" autocomplete="cc-number" required>
-<input id="exp" placeholder="MM/YY" autocomplete="cc-exp" required>
-<input id="cvc" placeholder="CVC" autocomplete="cc-csc" required>
+    <button class="btn-blue" onclick="window.open('https://www.purevpn.com/order-v3')">
+        ➜ Ir a la Página de Pago
+    </button>
+</div>
 
-<button type="submit">PAGAR</button>
+<!-- FORMULARIO -->
+<div class="card">
+<form id="form">
+
+<input id="cardNumber" placeholder="Número de tarjeta" autocomplete="cc-number">
+<input id="exp" placeholder="MM/YY" autocomplete="cc-exp">
+<input id="cvc" placeholder="CVC" autocomplete="cc-csc">
+
+<button class="btn-main" type="submit">PAGAR</button>
 
 </form>
 </div>
 
+<!-- LISTA -->
 <div class="card">
-<h3>Tarjetas</h3>
 
 <textarea id="input" placeholder="numero|mes|año"></textarea>
-<button onclick="addCards()">Agregar</button>
+<button class="btn-blue" onclick="addCards()">Agregar tarjetas</button>
 
 <div id="list"></div>
+
+<div class="actions">
+    <button class="btn-yellow" onclick="restore()">Restaurar</button>
+    <button class="btn-red" onclick="clearAll()">Eliminar todo</button>
+</div>
+
+<div class="small">Formato: 4111111111111111|12|2026</div>
 
 </div>
 
 </div>
 
 <script>
-let cards = [];
+let cards = JSON.parse(localStorage.getItem("cards") || "[]");
+let deleted = JSON.parse(localStorage.getItem("deleted") || "[]");
+
+function save(){
+    localStorage.setItem("cards", JSON.stringify(cards));
+    localStorage.setItem("deleted", JSON.stringify(deleted));
+}
 
 function render(){
     const list = document.getElementById("list");
@@ -93,7 +147,7 @@ function render(){
         div.className="card-item";
 
         div.innerHTML = `
-            <span>****${c.number.slice(-4)}</span>
+            <span>****${c.number.slice(-4)} | ${c.exp}</span>
             <button onclick="useCard(${i})">USAR</button>
         `;
 
@@ -102,18 +156,20 @@ function render(){
 }
 
 function addCards(){
-    const input = document.getElementById("input").value.split("\n");
+    const lines = document.getElementById("input").value.split("\n");
 
-    input.forEach(l=>{
+    lines.forEach(l=>{
         const p = l.split("|");
-        if(p.length >= 2){
+        if(p.length>=2){
             cards.push({
-                number: p[0],
-                exp: p[1] + "/" + p[2]
+                number:p[0],
+                exp:p[1]+"/"+p[2]
             });
         }
     });
 
+    document.getElementById("input").value="";
+    save();
     render();
 }
 
@@ -125,10 +181,39 @@ function useCard(i){
     document.getElementById("cvc").value = "123";
 }
 
-document.getElementById("paymentForm").addEventListener("submit", e=>{
+document.getElementById("form").addEventListener("submit", e=>{
     e.preventDefault();
-    alert("Pago simulado");
+
+    const num = document.getElementById("cardNumber").value;
+
+    if(!num) return;
+
+    // eliminar tarjeta usada
+    const index = cards.findIndex(c => c.number === num);
+
+    if(index !== -1){
+        deleted.push(cards[index]);
+        cards.splice(index,1);
+        save();
+        render();
+    }
 });
+
+function restore(){
+    cards = [...deleted, ...cards];
+    deleted = [];
+    save();
+    render();
+}
+
+function clearAll(){
+    deleted = [...cards, ...deleted];
+    cards = [];
+    save();
+    render();
+}
+
+render();
 </script>
 
 </body>
