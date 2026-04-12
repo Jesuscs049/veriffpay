@@ -1,252 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADB Matrix</title>
-
-<style>
-body {
-    background: #000;
-    color: #00ff9f;
-    font-family: "Courier New", monospace;
-    padding: 20px;
-}
-
-.container {
-    max-width: 700px;
-    margin: auto;
-}
-
-.title {
-    text-align: center;
-    font-size: 26px;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #00ff9f;
-}
-
-.card {
-    border: 1px solid #00ff9f;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-input, textarea {
-    width: 100%;
-    background: black;
-    border: 1px solid #00ff9f;
-    color: #00ff9f;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-button {
-    background: black;
-    border: 1px solid #00ff9f;
-    color: #00ff9f;
-    padding: 10px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-button:hover {
-    background: #00ff9f;
-    color: black;
-}
-
-.list {
-    max-height: 250px;
-    overflow-y: auto;
-    border: 1px solid #00ff9f;
-    padding: 10px;
-}
-
-.list::-webkit-scrollbar {
-    width: 6px;
-}
-.list::-webkit-scrollbar-thumb {
-    background: #00ff9f;
-}
-
-.item {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-}
-
-.actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-a {
-    display:block;
-    text-align:center;
-    border:1px solid #00ff9f;
-    padding:10px;
-    margin-bottom:10px;
-    text-decoration:none;
-    color:#00ff9f;
-}
-
-a:hover {
-    background:#00ff9f;
-    color:black;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Payment Flow</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 
 <div class="container">
+  <h2>Payment</h2>
 
-<div class="title">ADB MATRIX // MULTI CARD</div>
+  <form id="payment-form" autocomplete="on">
 
-<!-- LINKS -->
-<div class="card">
-<a href="https://payments.google.com/gp/w/home/settings" target="_blank">
-Añadir perfil de pagos
-</a>
+    <input 
+      type="text"
+      name="cc-name"
+      placeholder="Name on card (optional)"
+      autocomplete="cc-name"
+    >
 
-<a href="https://www.purevpn.com/order-v3" target="_blank">
-Ir a la página de pago
-</a>
+    <input 
+      type="text"
+      name="cc-number"
+      placeholder="Card Number"
+      autocomplete="cc-number"
+      required
+    >
+
+    <input 
+      type="text"
+      name="cc-exp"
+      placeholder="MM/YY"
+      autocomplete="cc-exp"
+      required
+    >
+
+    <input 
+      type="text"
+      name="cc-csc"
+      placeholder="CVC"
+      autocomplete="cc-csc"
+      required
+    >
+
+    <button type="submit">EXECUTE PAYMENT</button>
+
+  </form>
+
+  <p id="status"></p>
 </div>
 
-<!-- FORM DINÁMICO -->
-<div class="card" id="formContainer"></div>
-
-<!-- LISTA -->
-<div class="card">
-
-<textarea id="input" placeholder="numero|mes|año"></textarea>
-<button onclick="add()">ADD CARDS</button>
-
-<div class="list" id="list"></div>
-
-<div class="actions">
-<button onclick="restore()">RESTORE</button>
-<button onclick="clearAll()">DELETE ALL</button>
-</div>
-
-</div>
-
-</div>
-
-<script>
-let cards = JSON.parse(localStorage.getItem("cards") || "[]");
-let deleted = JSON.parse(localStorage.getItem("deleted") || "[]");
-
-function save(){
-    localStorage.setItem("cards", JSON.stringify(cards));
-    localStorage.setItem("deleted", JSON.stringify(deleted));
-}
-
-function render(){
-    const list = document.getElementById("list");
-    list.innerHTML = "";
-
-    cards.forEach((c,i)=>{
-        const div = document.createElement("div");
-        div.className="item";
-
-        div.innerHTML = `
-            <span>${c.number.slice(0,6)}******${c.number.slice(-4)}</span>
-            <button onclick="use(${i})">USE</button>
-        `;
-
-        list.appendChild(div);
-    });
-}
-
-function add(){
-    const lines = document.getElementById("input").value.split("\n");
-
-    lines.forEach(l=>{
-        const p = l.split("|");
-        if(p.length>=2){
-            cards.push({
-                number:p[0],
-                exp:p[1]+"/"+p[2]
-            });
-        }
-    });
-
-    document.getElementById("input").value="";
-    save();
-    render();
-}
-
-function use(i){
-    const c = cards[i];
-
-    document.getElementById("num").value = c.number;
-    document.getElementById("exp").value = c.exp;
-    document.getElementById("cvc").value = "123";
-}
-
-function buildForm(){
-    const form = document.createElement("form");
-    form.id = "form";
-
-    form.innerHTML = `
-        <input id="num" placeholder="Card Number" autocomplete="cc-number">
-        <input id="exp" placeholder="MM/YY" autocomplete="cc-exp">
-        <input id="cvc" placeholder="CVC" autocomplete="cc-csc">
-        <button type="submit">EXECUTE PAYMENT</button>
-    `;
-
-    form.addEventListener("submit", onSubmit);
-
-    return form;
-}
-
-function onSubmit(e){
-    e.preventDefault();
-
-    const num = document.getElementById("num").value;
-
-    const index = cards.findIndex(c => c.number === num);
-
-    if(index !== -1){
-        deleted.push(cards[index]);
-        cards.splice(index,1);
-        save();
-        render();
-    }
-
-    // 🔥 recrear formulario (clave)
-    setTimeout(()=>{
-        const oldForm = document.getElementById("form");
-        const newForm = buildForm();
-
-        oldForm.replaceWith(newForm);
-
-        newForm.querySelector("#num").focus();
-
-    },300);
-}
-
-function restore(){
-    cards = [...deleted, ...cards];
-    deleted = [];
-    save();
-    render();
-}
-
-function clearAll(){
-    deleted = [...cards, ...deleted];
-    cards = [];
-    save();
-    render();
-}
-
-// INIT
-document.getElementById("formContainer").appendChild(buildForm());
-render();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
