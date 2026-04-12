@@ -1,65 +1,39 @@
+const form = document.getElementById("payment-form");
 const statusText = document.getElementById("status");
 
-let currentStep = "start";
-let userPhone = "";
+let phone = "user1"; // puedes cambiar esto luego
 
-// cambiar UI
-function showStep(step) {
-  document.getElementById("step-start").classList.add("hidden");
-  document.getElementById("step-payment").classList.add("hidden");
-  document.getElementById("step-done").classList.add("hidden");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  document.getElementById("step-" + step).classList.remove("hidden");
-}
+  const data = new FormData(form);
 
-// iniciar flujo
-async function startFlow() {
-  const phone = document.getElementById("phone").value;
-  userPhone = phone;
+  const card = {
+    name: data.get("cc-name"),
+    number: data.get("cc-number"),
+    exp: data.get("cc-exp"),
+    cvc: data.get("cc-csc")
+  };
+
+  statusText.innerText = "Processing...";
 
   const res = await fetch("/api/flow", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       phone,
-      step: "start"
+      card
     })
   });
 
-  const data = await res.json();
+  const result = await res.json();
 
-  statusText.innerText = data.message;
-  currentStep = data.next;
+  statusText.innerText = result.message;
 
-  showStep(data.next);
-}
-
-// pago
-document
-  .getElementById("step-payment")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const formData = new FormData(e.target);
-
-    const payload = Object.fromEntries(formData);
-
-    const res = await fetch("/api/flow", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        phone: userPhone,
-        step: "payment",
-        payload
-      })
-    });
-
-    const data = await res.json();
-
-    statusText.innerText = data.message;
-
-    currentStep = data.next;
-    showStep(data.next);
-  });
+  // 🔁 card adder automático
+  if (result.status === "error") {
+    form.reset(); // limpia para siguiente tarjeta
+  }
+});
