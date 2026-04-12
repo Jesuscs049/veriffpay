@@ -2,36 +2,27 @@ body {
   background: #0f172a;
   color: white;
   font-family: Arial;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
 .container {
-  width: 320px;
+  width: 400px;
+  margin: auto;
   padding: 20px;
-  background: #1e293b;
-  border-radius: 10px;
 }
 
-input {
+textarea {
   width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-  border: none;
+  height: 120px;
 }
 
 button {
-  width: 100%;
+  margin-top: 10px;
   padding: 10px;
-  background: #22c55e;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  width: 100%;
 }
 
-.hidden {
-  display: none;
+.card {
+  background: #1e293b;
+  padding: 10px;
+  margin-top: 10px;
 }
