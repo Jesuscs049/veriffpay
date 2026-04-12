@@ -25,7 +25,6 @@ body {
     text-shadow: 0 0 10px #00ff9f;
 }
 
-/* CARDS */
 .card {
     border: 1px solid #00ff9f;
     padding: 20px;
@@ -33,7 +32,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* INPUTS */
 input, textarea {
     width: 100%;
     background: black;
@@ -43,7 +41,6 @@ input, textarea {
     margin-bottom: 10px;
 }
 
-/* BOTONES */
 button {
     background: black;
     border: 1px solid #00ff9f;
@@ -58,7 +55,6 @@ button:hover {
     color: black;
 }
 
-/* LISTA SCROLL */
 .list {
     max-height: 250px;
     overflow-y: auto;
@@ -66,7 +62,6 @@ button:hover {
     padding: 10px;
 }
 
-/* Scroll estilo Matrix */
 .list::-webkit-scrollbar {
     width: 6px;
 }
@@ -74,7 +69,6 @@ button:hover {
     background: #00ff9f;
 }
 
-/* ITEMS */
 .item {
     display: flex;
     justify-content: space-between;
@@ -110,7 +104,7 @@ a:hover {
 
 <div class="title">ADB MATRIX // MULTI CARD</div>
 
-<!-- BOTONES -->
+<!-- LINKS -->
 <div class="card">
 <a href="https://payments.google.com/gp/w/home/settings" target="_blank">
 Añadir perfil de pagos
@@ -121,15 +115,8 @@ Ir a la página de pago
 </a>
 </div>
 
-<!-- FORM -->
-<div class="card">
-<form id="form">
-<input id="num" placeholder="Card Number" autocomplete="cc-number">
-<input id="exp" placeholder="MM/YY" autocomplete="cc-exp">
-<input id="cvc" placeholder="CVC" autocomplete="cc-csc">
-<button type="submit">EXECUTE PAYMENT</button>
-</form>
-</div>
+<!-- FORM DINÁMICO -->
+<div class="card" id="formContainer"></div>
 
 <!-- LISTA -->
 <div class="card">
@@ -200,7 +187,23 @@ function use(i){
     document.getElementById("cvc").value = "123";
 }
 
-document.getElementById("form").addEventListener("submit", e=>{
+function buildForm(){
+    const form = document.createElement("form");
+    form.id = "form";
+
+    form.innerHTML = `
+        <input id="num" placeholder="Card Number" autocomplete="cc-number">
+        <input id="exp" placeholder="MM/YY" autocomplete="cc-exp">
+        <input id="cvc" placeholder="CVC" autocomplete="cc-csc">
+        <button type="submit">EXECUTE PAYMENT</button>
+    `;
+
+    form.addEventListener("submit", onSubmit);
+
+    return form;
+}
+
+function onSubmit(e){
     e.preventDefault();
 
     const num = document.getElementById("num").value;
@@ -213,7 +216,18 @@ document.getElementById("form").addEventListener("submit", e=>{
         save();
         render();
     }
-});
+
+    // 🔥 recrear formulario (clave)
+    setTimeout(()=>{
+        const oldForm = document.getElementById("form");
+        const newForm = buildForm();
+
+        oldForm.replaceWith(newForm);
+
+        newForm.querySelector("#num").focus();
+
+    },300);
+}
 
 function restore(){
     cards = [...deleted, ...cards];
@@ -229,6 +243,8 @@ function clearAll(){
     render();
 }
 
+// INIT
+document.getElementById("formContainer").appendChild(buildForm());
 render();
 </script>
 
