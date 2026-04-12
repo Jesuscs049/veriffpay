@@ -1,7 +1,7 @@
 body {
   background: #0f172a;
   color: white;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,7 +9,7 @@ body {
 }
 
 .container {
-  width: 300px;
+  width: 320px;
   padding: 20px;
   background: #1e293b;
   border-radius: 10px;
@@ -30,9 +30,8 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-weight: bold;
 }
 
-button:hover {
-  background: #16a34a;
+.hidden {
+  display: none;
 }
