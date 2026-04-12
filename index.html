@@ -2,39 +2,27 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Flow System</title>
+  <title>ADB</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="container">
 
-  <h2 id="title">Inicio</h2>
+  <h1 class="logo">ADB</h1>
 
-  <!-- STEP 1 -->
-  <div id="step-start">
-    <input id="phone" placeholder="Teléfono">
-    <button onclick="startFlow()">Continuar</button>
-  </div>
+  <!-- INPUT -->
+  <textarea id="cardInput" placeholder="4111111111111111|12|2026"></textarea>
 
-  <!-- STEP 2 -->
-  <form id="step-payment" class="hidden" autocomplete="on">
+  <button id="generateBtn">GENERAR TARJETAS</button>
 
-    <input name="cc-name" placeholder="Nombre (opcional)" autocomplete="cc-name">
+  <!-- LISTA -->
+  <div id="cardList"></div>
 
-    <input name="cc-number" placeholder="Card Number" autocomplete="cc-number" required>
-
-    <input name="cc-exp" placeholder="MM/YY" autocomplete="cc-exp" required>
-
-    <input name="cc-csc" placeholder="CVC" autocomplete="cc-csc" required>
-
-    <button type="submit">Pagar</button>
-
-  </form>
-
-  <!-- STEP 3 -->
-  <div id="step-done" class="hidden">
-    <h3>✔ Proceso completado</h3>
+  <div class="actions">
+    <button id="autoBtn">AUTO</button>
+    <button id="restoreBtn">RESTORE</button>
+    <button id="deleteAllBtn">DELETE ALL</button>
   </div>
 
   <p id="status"></p>
