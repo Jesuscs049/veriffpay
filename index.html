@@ -1,242 +1,325 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADB - ASOCIACIÓN</title>
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADB - ASOCIACIÓN</title>
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.5; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
+<style>
+:root {
+    --primary: #4f46e5;
+    --success: #22c55e;
+    --bg-color: #f3f4f6;
+    --card-bg: #ffffff;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+}
 
-        /* Header */
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo-text { font-size: 2.2rem; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
-        .logo-sub { display: block; font-size: 0.9rem; font-weight: bold; color: var(--text-muted); margin-bottom: 5px; }
-        .credits { font-size: 0.9rem; color: var(--text-muted); }
-        .credits a { color: var(--primary); text-decoration: none; font-weight: 600; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, system-ui, sans-serif;
+}
 
-        /* Step Cards */
-        .step-card { background: var(--card-bg); border-radius: 12px; padding: 24px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-        .step-header { display: flex; align-items: center; margin-bottom: 20px; gap: 15px; }
-        .step-num { background: var(--primary); color: white; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; flex-shrink: 0; }
-        .step-header h2 { font-size: 1.25rem; flex-grow: 1; font-weight: 700; }
-        
-        .toggle-btn { background: #eff6ff; border: 1px solid #dbeafe; color: var(--primary); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+body {
+    background: linear-gradient(135deg, #eef2ff, #f8fafc);
+    color: var(--text-main);
+    padding: 20px;
+}
 
-        /* Step 1 Elements */
-        .action-btn { display: block; text-align: center; width: 100%; padding: 14px; border-radius: 10px; text-decoration: none; font-weight: 700; margin: 15px 0; transition: all 0.2s; }
-        .action-btn.primary { background: var(--primary); color: white; }
-        .info-card { background: #f9fafb; border-left: 4px solid var(--primary); padding: 16px; border-radius: 8px; margin-top: 20px; }
-        .info-card h4 { margin-bottom: 8px; color: var(--text-main); }
-        .info-text { font-size: 0.9rem; color: #4b5563; }
-        .gif-wrapper img { width: 100%; border-radius: 8px; margin: 10px 0; border: 1px solid var(--border); }
+.container {
+    max-width: 850px;
+    margin: 0 auto;
+}
 
-        /* Card Preview (Replica) */
-        .card-preview { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; position: relative; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3); }
-        .card-chip { width: 45px; height: 35px; background: linear-gradient(135deg, #fbbf24, #d97706); border-radius: 6px; margin-bottom: 20px; }
-        .card-number { font-size: 1.5rem; letter-spacing: 3px; margin-bottom: 20px; font-family: 'Courier New', monospace; }
-        .card-info { display: flex; justify-content: space-between; align-items: flex-end; }
-        .card-info .label { font-size: 0.65rem; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px; display: block; }
-        .card-info .value { font-size: 1rem; font-weight: 600; }
+/* HEADER */
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-        /* Form Styling */
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 0.9rem; font-weight: 600; margin-bottom: 8px; color: #374151; }
-        input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; transition: border 0.2s; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-        
-        .amount-box { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 16px; border-radius: 10px; margin: 20px 0; border: 1px dashed #cbd5e1; }
-        .amount-box strong { font-size: 1.2rem; color: #059669; }
+.logo-text {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--primary);
+    letter-spacing: 3px;
+}
 
-        .submit-btn { width: 100%; background: #10b981; color: white; border: none; padding: 16px; font-size: 1.1rem; font-weight: 700; border-radius: 10px; cursor: pointer; }
-        .submit-btn:disabled { background: #6ee7b7; }
+.logo-sub {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
 
-        .hidden { display: none !important; }
-        .result-msg { margin-top: 15px; padding: 12px; background: #dcfce7; color: #166534; border-radius: 8px; text-align: center; font-weight: 600; }
-        
-        /* Ocultos para Autocompletar */
-        .ghost-fields { position: absolute; left: -9999px; opacity: 0; height: 0; }
-    </style>
+/* CARDS */
+.step-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    animation: fadeIn 0.4s ease;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.step-num {
+    background: var(--primary);
+    color: white;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* PANEL */
+.multi-panel {
+    background: #1e2937;
+    color: white;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* TEXTAREA */
+textarea {
+    width: 100%;
+    height: 130px;
+    background: #334155;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 15px;
+    resize: none;
+}
+
+/* BOTONES */
+.btn {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.btn-success {
+    background: var(--success);
+    color: black;
+}
+
+.btn-restore {
+    background: #eab308;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+/* LISTA */
+.card-list {
+    max-height: 420px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.card-item {
+    background: #334155;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+    transition: 0.2s;
+}
+
+.card-item:hover {
+    transform: scale(1.02);
+}
+
+/* SCROLL */
+.card-list::-webkit-scrollbar {
+    width: 6px;
+}
+.card-list::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 10px;
+}
+
+/* LOADER */
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.status {
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
-    <header class="header">
-        <h1 class="logo-text">ADB</h1>
-        <span class="logo-sub">ASOCIACIÓN</span>
-        <p class="credits">by <a href="" target="_blank">@adbenego</a></p>
-    </header>
 
-    <section class="step-card">
-        <div class="step-header">
-            <span class="step-num">1</span>
-            <h2>Añade un perfil de pagos</h2>
-        </div>
-        <div class="step-body">
-            <p style="font-size: 0.95rem;">Crea o actualiza tu perfil de pagos en Google Pay:</p>
-            <a href="https://payments.google.com/gp/w/u/0/home/settings" target="_blank" class="action-btn primary">Añadir perfil de pagos</a>
-        </div>
-    </section>
+<header class="header">
+    <h1 class="logo-text">ADB</h1>
+    <span class="logo-sub">ASOCIACIÓN</span>
+</header>
 
-    <section class="step-card">
-        <div class="step-header">
-            <span class="step-num">2</span>
-            <h2 id="stepTitle">Verificar el pago - Nueva versión</h2>
-            <button type="button" class="toggle-btn" id="versionToggle">Vieja versión</button>
-        </div>
+<section class="step-card">
+    <div class="step-header">
+        <span class="step-num">1</span>
+        <h2>Añade un perfil de pagos</h2>
+    </div>
 
-        <div class="card-preview">
-            <div class="card-chip"></div>
-            <div class="card-number" id="cardPreview">•••• •••• •••• ••••</div>
-            <div class="card-info">
-                <div id="holderSection" class="hidden">
-                    <span class="label">TITULAR</span>
-                    <span class="value" id="holderPreview">TU NOMBRE</span>
-                </div>
-                <div>
-                    <span class="label">VENCE</span>
-                    <span class="value" id="expiryPreview">MM/AA</span>
-                </div>
-            </div>
-        </div>
+    <a href="https://payments.google.com/gp/w/home/settings" target="_blank" class="btn btn-primary">
+        IR A GOOGLE PAY
+    </a>
+</section>
 
-        <form id="payment-form" autocomplete="on">
-            <div class="form-group">
-                <label for="cardNumber">Número de tarjeta</label>
-                <input type="text" id="cardNumber" name="cc-number" autocomplete="cc-number" inputmode="numeric" maxlength="19" placeholder="1234 5678 9012 3456" required>
-            </div>
+<section class="step-card">
 
-            <div id="newVersionInputs">
-                <div class="form-group">
-                    <label for="expiryField">Vencimiento (MM/AA)</label>
-                    <input type="text" id="expiryField" placeholder="02/27" inputmode="numeric" maxlength="5" required>
-                </div>
-            </div>
+<div class="step-header">
+    <span class="step-num">2</span>
+    <h2>Multi Card Adder</h2>
+</div>
 
-            <div id="oldVersionInputs" class="hidden">
-                <div class="form-group">
-                    <label for="cardHolder">Nombre del titular</label>
-                    <input type="text" id="cardHolder" name="cc-name" autocomplete="cc-name" placeholder="JUAN PEREZ">
-                </div>
-                <div style="display: flex; gap: 15px;">
-                    <div class="form-group" style="flex: 1;">
-                        <label>Mes</label>
-                        <select id="expMonth"><option value="">MM</option><option value="01">01</option><option value="12">12</option></select>
-                    </div>
-                    <div class="form-group" style="flex: 1;">
-                        <label>Año</label>
-                        <select id="expYear"><option value="">AA</option><option value="25">2025</option><option value="30">2030</option></select>
-                    </div>
-                </div>
-            </div>
+<div class="multi-panel">
 
-            <div class="ghost-fields">
-                <input type="text" name="cc-exp" id="cc-exp-hidden" autocomplete="cc-exp">
-                <input type="text" name="cc-csc" autocomplete="cc-csc" value="123">
-            </div>
+<textarea id="cardInput"></textarea>
 
-            <div class="amount-box">
-                <span>Total a pagar:</span>
-                <strong>$150,000 COP</strong>
-            </div>
+<div style="font-size:12px; margin-top:6px;">
+Formato: numero|mes|año
+</div>
 
-            <button type="submit" class="submit-btn" id="payButton">
-                <span id="btnText">Pagar $150,000 COP</span>
-            </button>
-            <div id="resultMessage" class="result-msg hidden">¡Procesado con éxito!</div>
-        </form>
-    </section>
+<button class="btn btn-primary" id="generateBtn">GENERAR</button>
 
-    <section class="step-card">
-        <div class="step-header">
-            <span class="step-num">3</span>
-            <h2>Completar pago oficial</h2>
-        </div>
-        <p style="font-size: 0.9rem; margin-bottom: 15px;">Continúa en el enlace oficial una vez verificado:</p>
-        <a href="https://www.purevpn.com/order-v3" target="_blank" class="action-btn primary" style="background: #6366f1;">Ir a la página de pago</a>
-    </section>
+<div class="card-list" id="cardList"></div>
+
+<div style="display:flex; gap:10px; margin-top:15px;">
+<button class="btn btn-restore" id="restoreBtn">Restaurar</button>
+<button class="btn btn-danger" id="deleteAllBtn">Eliminar</button>
+</div>
+
+<div class="status" id="status"></div>
+
+</div>
+</section>
+
 </div>
 
 <script>
-    // --- LÓGICA DE INTERFAZ (RÉPLICA) ---
-    const versionToggle = document.getElementById('versionToggle');
-    const newInputs = document.getElementById('newVersionInputs');
-    const oldInputs = document.getElementById('oldVersionInputs');
-    const holderSection = document.getElementById('holderSection');
-    const stepTitle = document.getElementById('stepTitle');
-    let isNewVersion = true;
+let cards = [];
+let deletedCards = [];
 
-    versionToggle.addEventListener('click', () => {
-        isNewVersion = !isNewVersion;
-        newInputs.classList.toggle('hidden');
-        oldInputs.classList.toggle('hidden');
-        holderSection.classList.toggle('hidden');
-        stepTitle.textContent = isNewVersion ? "Verificar el pago - Nueva versión" : "Verificar el pago - Vieja versión";
-        versionToggle.textContent = isNewVersion ? "Vieja versión" : "Nueva versión";
+const input = document.getElementById('cardInput');
+const list = document.getElementById('cardList');
+const status = document.getElementById('status');
+
+function render(){
+    list.innerHTML = "";
+
+    cards.forEach((c,i)=>{
+        const div = document.createElement("div");
+        div.className="card-item";
+
+        div.innerHTML = `
+            <div>****${c.number.slice(-4)} | ${c.expiry}</div>
+            <button class="btn btn-success pay-btn">PAGAR</button>
+        `;
+
+        div.querySelector("button").onclick=()=>pay(i);
+
+        list.appendChild(div);
     });
+}
 
-    // --- PERSISTENCIA Y FORMATEO ---
-    const expiryField = document.getElementById('expiryField');
-    const expiryPreview = document.getElementById('expiryPreview');
-    const expiryHidden = document.getElementById('cc-exp-hidden');
-    const cardInput = document.getElementById('cardNumber');
-    const cardPreview = document.getElementById('cardPreview');
+function pay(i){
+    const btns = document.querySelectorAll(".pay-btn");
+    btns[i].innerHTML = '<div class="loader"></div>';
+    btns[i].disabled=true;
 
-    // Cargar fecha guardada
-    window.addEventListener('load', () => {
-        const saved = localStorage.getItem('torevip_date');
-        if (saved) {
-            expiryField.value = saved;
-            expiryPreview.textContent = saved;
-            expiryHidden.value = saved;
+    setTimeout(()=>{
+        deletedCards.push(cards[i]);
+        cards.splice(i,1);
+        render();
+
+        status.innerText="Tarjeta procesada";
+    },2000);
+}
+
+document.getElementById("generateBtn").onclick=()=>{
+    const lines=input.value.split("\n");
+
+    lines.forEach(l=>{
+        const p=l.split("|");
+        if(p.length>=2){
+            cards.push({
+                number:p[0],
+                expiry:p[1]+"/"+p[2]
+            });
         }
     });
 
-    // Formatear y Guardar Fecha (PERSISTENTE)
-    expiryField.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\D/g, '');
-        if (val.length >= 3) val = val.substring(0, 2) + '/' + val.substring(2, 4);
-        e.target.value = val;
-        expiryPreview.textContent = val || 'MM/AA';
-        expiryHidden.value = val;
-        localStorage.setItem('torevip_date', val);
-    });
+    input.value="";
+    render();
+};
 
-    // Formatear Tarjeta
-    cardInput.addEventListener('input', (e) => {
-        let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-        let formatted = val.match(/.{1,4}/g)?.join(' ') || '';
-        e.target.value = formatted;
-        cardPreview.textContent = formatted || '•••• •••• •••• ••••';
-    });
+document.getElementById("deleteAllBtn").onclick=()=>{
+    cards=[];
+    render();
+};
 
-    // --- LÓGICA DE PAGO ---
-    document.getElementById('payment-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const btnText = document.getElementById('btnText');
-        const msg = document.getElementById('resultMessage');
-        
-        btnText.textContent = "Procesando...";
-        document.getElementById('payButton').disabled = true;
-
-        setTimeout(() => {
-            btnText.textContent = "Pagar $150,000 COP";
-            document.getElementById('payButton').disabled = false;
-            msg.classList.remove('hidden');
-            // En HTTPS (Vercel), esto disparará el guardado de tarjeta del navegador
-        }, 2000);
-    });
+document.getElementById("restoreBtn").onclick=()=>{
+    cards=[...deletedCards,...cards];
+    deletedCards=[];
+    render();
+};
 </script>
+
 </body>
 </html>
