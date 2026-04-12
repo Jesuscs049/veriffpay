@@ -1,43 +1,65 @@
-const form = document.getElementById("payment-form");
 const statusText = document.getElementById("status");
 
-// formateo básico (mejora UX y ayuda a Chrome)
-const numberInput = form.querySelector('[name="cc-number"]');
-const expInput = form.querySelector('[name="cc-exp"]');
+let currentStep = "start";
+let userPhone = "";
 
-numberInput.addEventListener("input", (e) => {
-  let value = e.target.value.replace(/\D/g, "").substring(0, 16);
-  value = value.replace(/(.{4})/g, "$1 ").trim();
-  e.target.value = value;
-});
+// cambiar UI
+function showStep(step) {
+  document.getElementById("step-start").classList.add("hidden");
+  document.getElementById("step-payment").classList.add("hidden");
+  document.getElementById("step-done").classList.add("hidden");
 
-expInput.addEventListener("input", (e) => {
-  let value = e.target.value.replace(/\D/g, "").substring(0, 4);
-  if (value.length >= 3) {
-    value = value.substring(0, 2) + "/" + value.substring(2);
-  }
-  e.target.value = value;
-});
+  document.getElementById("step-" + step).classList.remove("hidden");
+}
 
-// submit
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+// iniciar flujo
+async function startFlow() {
+  const phone = document.getElementById("phone").value;
+  userPhone = phone;
 
-  const data = new FormData(form);
+  const res = await fetch("/api/flow", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      phone,
+      step: "start"
+    })
+  });
 
-  const payload = {
-    name: data.get("cc-name"),
-    number: data.get("cc-number"),
-    exp: data.get("cc-exp"),
-    cvc: data.get("cc-csc")
-  };
+  const data = await res.json();
 
-  // simulación de proceso (puedes conectar tu API aquí)
-  statusText.innerText = "Processing...";
+  statusText.innerText = data.message;
+  currentStep = data.next;
 
-  setTimeout(() => {
-    statusText.innerText = "Payment processed ✔";
-  }, 1500);
+  showStep(data.next);
+}
 
-  console.log("DATA:", payload);
-});
+// pago
+document
+  .getElementById("step-payment")
+  .addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const payload = Object.fromEntries(formData);
+
+    const res = await fetch("/api/flow", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        phone: userPhone,
+        step: "payment",
+        payload
+      })
+    });
+
+    const data = await res.json();
+
+    statusText.innerText = data.message;
+
+    currentStep = data.next;
+    showStep(data.next);
+  });
