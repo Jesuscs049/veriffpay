@@ -6,61 +6,413 @@
 <title>ADB Matrix</title>
 
 <style>
-body {
-    background: #000;
-    color: #00ff9f;
-    font-family: "Courier New", monospace;
-    padding: 20px;
+:root {
+    --bg: #050505;
+    --panel: rgba(5, 18, 13, 0.92);
+    --panel-2: rgba(3, 10, 8, 0.92);
+    --line: #00ff9f;
+    --line-soft: rgba(0, 255, 159, 0.28);
+    --text: #b8ffd8;
+    --muted: #73c79b;
+    --danger: #ff6b8a;
+    --success: #7dffbe;
+    --shadow: 0 0 35px rgba(0, 255, 159, 0.12);
 }
 
-.container {
-    max-width: 700px;
-    margin: auto;
-}
-
-.title {
-    text-align: center;
-    font-size: 26px;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #00ff9f;
-}
-
-.card {
-    border: 1px solid #00ff9f;
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-input, textarea {
-    width: 100%;
-    background: black;
-    border: 1px solid #00ff9f;
-    color: #00ff9f;
-    padding: 10px;
-    margin-bottom: 10px;
+* {
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: "Courier New", monospace;
+    background:
+        radial-gradient(circle at top, rgba(0, 255, 159, 0.15), transparent 30%),
+        linear-gradient(180deg, #020202 0%, #07110d 100%);
+    padding: 24px 16px 48px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(0, 255, 159, 0.06) 1px, transparent 1px);
+    background-size: 100% 4px;
+    opacity: 0.22;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: min(860px, 100%);
+    margin: 0 auto;
+}
+
+.hero {
+    margin-bottom: 18px;
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 24px;
+    background: linear-gradient(180deg, rgba(4, 20, 14, 0.95), rgba(2, 11, 8, 0.92));
+    box-shadow: var(--shadow);
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    padding: 6px 12px;
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.title {
+    margin: 0 0 10px;
+    font-size: clamp(28px, 5vw, 42px);
+    line-height: 1;
+    text-shadow: 0 0 14px rgba(0, 255, 159, 0.45);
+}
+
+.subtitle {
+    margin: 0;
+    max-width: 650px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0 22px;
+}
+
+.step-pill {
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.28);
+}
+
+.step-pill strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--line);
+    font-size: 12px;
+}
+
+.step-pill span {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.card {
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 18px;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    box-shadow: var(--shadow);
+}
+
+.section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.section-kicker {
+    color: var(--line);
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.section-title {
+    margin: 4px 0 0;
+    font-size: 22px;
+}
+
+.section-note {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.status-badge {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line-soft);
+    color: var(--line);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.link-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.link-card {
+    display: block;
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 16px;
+    text-decoration: none;
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.2);
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.link-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--line);
+    box-shadow: 0 0 18px rgba(0, 255, 159, 0.14);
+}
+
+.link-card strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--line);
+}
+
+.link-card span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.verify-grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.preview-card {
+    position: sticky;
+    top: 16px;
+    overflow: hidden;
+    min-height: 220px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 22px;
+    padding: 22px;
+    background:
+        radial-gradient(circle at top right, rgba(125, 255, 190, 0.24), transparent 34%),
+        linear-gradient(135deg, #0d2218 0%, #08110e 55%, #020504 100%);
+}
+
+.preview-card::after {
+    content: "";
+    position: absolute;
+    inset: auto -20px -36px auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(0, 255, 159, 0.08);
+    filter: blur(4px);
+}
+
+.chip {
+    width: 44px;
+    height: 32px;
+    border-radius: 8px;
+    margin-bottom: 28px;
+    background: linear-gradient(135deg, #d6ffea, #6dffc0);
+    box-shadow: 0 0 24px rgba(125, 255, 190, 0.18);
+}
+
+.preview-label {
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.preview-number {
+    margin: 8px 0 24px;
+    font-size: clamp(22px, 3vw, 29px);
+    letter-spacing: 2px;
+    color: #f0fff7;
+    word-spacing: 4px;
+}
+
+.preview-meta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.preview-holder,
+.preview-exp {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.preview-value {
+    color: #f0fff7;
+    font-size: 15px;
+}
+
+.form-panel {
+    display: grid;
+    gap: 14px;
+}
+
+.form-group {
+    display: grid;
+    gap: 8px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 120px;
+    gap: 12px;
+}
+
+label {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+input,
+textarea {
+    width: 100%;
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 13px 14px;
+    background: rgba(0, 0, 0, 0.35);
+    color: var(--text);
+    font: inherit;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--line);
+    box-shadow: 0 0 0 3px rgba(0, 255, 159, 0.12);
+}
+
+.input-hint {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.amount-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px dashed var(--line-soft);
+    border-radius: 16px;
+    padding: 14px;
+    background: rgba(0, 0, 0, 0.18);
+    color: var(--muted);
+}
+
+.amount-box strong {
+    color: var(--line);
+    font-size: 18px;
+}
+
 button {
-    background: black;
-    border: 1px solid #00ff9f;
-    color: #00ff9f;
-    padding: 10px;
+    appearance: none;
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.3);
+    color: var(--line);
+    font: inherit;
     cursor: pointer;
-    transition: 0.2s;
+    transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
 button:hover {
-    background: #00ff9f;
-    color: black;
+    background: var(--line);
+    color: #05110c;
+    transform: translateY(-1px);
+}
+
+button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+}
+
+.primary-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 18px;
+    background: linear-gradient(180deg, rgba(0, 255, 159, 0.18), rgba(0, 255, 159, 0.08));
+    border-color: rgba(0, 255, 159, 0.45);
+}
+
+.primary-btn:hover {
+    background: var(--line);
+}
+
+.result {
+    min-height: 22px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.result.error {
+    color: var(--danger);
+}
+
+.result.success {
+    color: var(--success);
+}
+
+.textarea-wrap {
+    display: grid;
+    gap: 10px;
+}
+
+textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .list {
-    max-height: 250px;
+    min-height: 84px;
+    max-height: 290px;
     overflow-y: auto;
-    border: 1px solid #00ff9f;
-    padding: 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: 16px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.18);
 }
 
 .list::-webkit-scrollbar {
@@ -68,162 +420,442 @@ button:hover {
 }
 
 .list::-webkit-scrollbar-thumb {
-    background: #00ff9f;
+    background: var(--line);
 }
 
 .item {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
     align-items: center;
-    margin-bottom: 8px;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0, 255, 159, 0.08);
+}
+
+.item:last-child {
+    border-bottom: 0;
+}
+
+.item-data {
+    display: grid;
+    gap: 4px;
+}
+
+.item-main {
+    color: #effff6;
+}
+
+.item-sub {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.empty-state {
+    display: grid;
+    place-items: center;
+    min-height: 58px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 13px;
 }
 
 .actions {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
 }
 
-a {
-    display: block;
-    text-align: center;
-    border: 1px solid #00ff9f;
-    padding: 10px;
-    margin-bottom: 10px;
-    text-decoration: none;
-    color: #00ff9f;
+.toast {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 30;
+    padding: 12px 14px;
+    border: 1px solid var(--line-soft);
+    border-radius: 14px;
+    background: rgba(3, 17, 12, 0.96);
+    box-shadow: var(--shadow);
+    color: var(--line);
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-a:hover {
-    background: #00ff9f;
-    color: black;
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 780px) {
+    .steps,
+    .link-grid,
+    .verify-grid,
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-card {
+        position: static;
+    }
+
+    .section-head,
+    .amount-box {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
+    <section class="hero">
+        <div class="eyebrow">ADB Matrix flow</div>
+        <h1 class="title">ADB MATRIX // MULTI CARD</h1>
+        <p class="subtitle">
+            Mismo concepto de tu pagina, pero con un flujo mas claro: abrir enlaces, preparar tarjeta, ejecutar y avanzar a la siguiente.
+        </p>
 
-<div class="title">ADB MATRIX // MULTI CARD</div>
+        <div class="steps">
+            <div class="step-pill">
+                <strong>STEP 01</strong>
+                <span>Abre el perfil de pagos o la pagina final desde accesos directos visibles.</span>
+            </div>
+            <div class="step-pill">
+                <strong>STEP 02</strong>
+                <span>Carga tarjetas, elige una y revisa la previsualizacion antes de usarla.</span>
+            </div>
+            <div class="step-pill">
+                <strong>STEP 03</strong>
+                <span>Ejecuta el formulario con feedback visual y pasa a la siguiente tarjeta.</span>
+            </div>
+        </div>
+    </section>
 
-<div class="card">
-<a href="https://payments.google.com/gp/w/home/settings" target="_blank" rel="noopener noreferrer">
-Anadir perfil de pagos
-</a>
+    <section class="card">
+        <div class="section-head">
+            <div>
+                <div class="section-kicker">Quick Access</div>
+                <h2 class="section-title">Enlaces principales</h2>
+                <p class="section-note">Los mantuve al frente del flujo para que la pagina se sienta mas guiada.</p>
+            </div>
+            <div class="status-badge" id="cardCountBadge">0 cards loaded</div>
+        </div>
 
-<a href="https://www.purevpn.com/order-v3" target="_blank" rel="noopener noreferrer">
-Ir a la pagina de pago
-</a>
+        <div class="link-grid">
+            <a class="link-card" href="https://payments.google.com/gp/w/home/settings" target="_blank" rel="noopener noreferrer">
+                <strong>Anadir perfil de pagos</strong>
+                <span>Abre Google Payments en una nueva pestana.</span>
+            </a>
+            <a class="link-card" href="https://www.purevpn.com/order-v3" target="_blank" rel="noopener noreferrer">
+                <strong>Ir a la pagina de pago</strong>
+                <span>Continua al destino final cuando termines la preparacion.</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-head">
+            <div>
+                <div class="section-kicker">Verification</div>
+                <h2 class="section-title">Formulario con preview</h2>
+                <p class="section-note">Ahora se siente mas cercano a un flujo real: preview, validacion y estado de proceso.</p>
+            </div>
+            <div class="status-badge" id="selectionBadge">No card selected</div>
+        </div>
+
+        <div class="verify-grid">
+            <div class="preview-card">
+                <div class="chip"></div>
+                <div class="preview-label">Card Number</div>
+                <div class="preview-number" id="cardPreview">•••• •••• •••• ••••</div>
+
+                <div class="preview-meta">
+                    <div class="preview-holder">
+                        <span class="preview-label">Status</span>
+                        <span class="preview-value" id="statusPreview">Waiting for selection</span>
+                    </div>
+                    <div class="preview-exp">
+                        <span class="preview-label">Expires</span>
+                        <span class="preview-value" id="expPreview">MM/YY</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="formContainer"></div>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-head">
+            <div>
+                <div class="section-kicker">Card Manager</div>
+                <h2 class="section-title">Cargar y administrar tarjetas</h2>
+                <p class="section-note">Pega varias lineas usando el formato <code>numero|mes|anio</code>.</p>
+            </div>
+        </div>
+
+        <div class="textarea-wrap">
+            <label for="input">Lote de tarjetas</label>
+            <textarea id="input" placeholder="4111111111111111|02|28&#10;5555555555554444|09|27"></textarea>
+            <div class="toolbar">
+                <button type="button" onclick="add()">ADD CARDS</button>
+            </div>
+        </div>
+
+        <div class="list" id="list"></div>
+
+        <div class="actions">
+            <button type="button" onclick="restore()">RESTORE</button>
+            <button type="button" onclick="clearAll()">DELETE ALL</button>
+        </div>
+    </section>
 </div>
 
-<div class="card" id="formContainer"></div>
-
-<div class="card">
-
-<textarea id="input" placeholder="numero|mes|año"></textarea>
-<button onclick="add()">ADD CARDS</button>
-
-<div class="list" id="list"></div>
-
-<div class="actions">
-<button onclick="restore()">RESTORE</button>
-<button onclick="clearAll()">DELETE ALL</button>
-</div>
-
-</div>
-
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
 let cards = JSON.parse(localStorage.getItem("cards") || "[]");
 let deleted = JSON.parse(localStorage.getItem("deleted") || "[]");
+let selectedIndex = null;
 
 function save() {
     localStorage.setItem("cards", JSON.stringify(cards));
     localStorage.setItem("deleted", JSON.stringify(deleted));
 }
 
+function maskNumber(number) {
+    const digits = String(number || "").replace(/\D/g, "");
+    if (!digits) return "•••• •••• •••• ••••";
+    const visible = digits.padEnd(16, "•").slice(0, 16);
+    return visible.replace(/(.{4})/g, "$1 ").trim();
+}
+
+function formatExp(value) {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 4);
+    if (digits.length <= 2) return digits;
+    return digits.slice(0, 2) + "/" + digits.slice(2);
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(showToast.timer);
+    showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 1800);
+}
+
+function setResult(message, type) {
+    const result = document.getElementById("result");
+    if (!result) return;
+    result.textContent = message;
+    result.className = "result" + (type ? " " + type : "");
+}
+
+function updateSummary() {
+    document.getElementById("cardCountBadge").textContent = cards.length + (cards.length === 1 ? " card loaded" : " cards loaded");
+}
+
+function updatePreview(number = "", exp = "", status = "Waiting for selection") {
+    document.getElementById("cardPreview").textContent = maskNumber(number);
+    document.getElementById("expPreview").textContent = exp || "MM/YY";
+    document.getElementById("statusPreview").textContent = status;
+}
+
+function updateSelectionBadge() {
+    const badge = document.getElementById("selectionBadge");
+    if (selectedIndex === null || !cards[selectedIndex]) {
+        badge.textContent = "No card selected";
+        return;
+    }
+    badge.textContent = "Selected: " + cards[selectedIndex].number.slice(-4);
+}
+
 function render() {
     const list = document.getElementById("list");
     list.innerHTML = "";
 
+    if (!cards.length) {
+        list.innerHTML = '<div class="empty-state">No hay tarjetas cargadas. Agrega un lote y apareceran aqui.</div>';
+    }
+
     cards.forEach((c, i) => {
         const div = document.createElement("div");
         div.className = "item";
-
         div.innerHTML = `
-            <span>${c.number.slice(0, 6)}******${c.number.slice(-4)}</span>
-            <button onclick="use(${i})">USE</button>
+            <div class="item-data">
+                <span class="item-main">${c.number.slice(0, 6)}******${c.number.slice(-4)}</span>
+                <span class="item-sub">EXP ${c.exp}</span>
+            </div>
+            <button type="button" onclick="use(${i})">USE</button>
         `;
-
         list.appendChild(div);
     });
+
+    updateSummary();
+    updateSelectionBadge();
 }
 
 function add() {
-    const lines = document.getElementById("input").value.split("\n");
+    const raw = document.getElementById("input").value.trim();
+    const lines = raw ? raw.split("\n") : [];
+    let added = 0;
 
-    lines.forEach((l) => {
-        const p = l.split("|");
-        if (p.length >= 3) {
+    lines.forEach((line) => {
+        const parts = line.split("|").map((part) => part.trim());
+        if (parts.length >= 3 && parts[0] && parts[1] && parts[2]) {
             cards.push({
-                number: p[0].trim(),
-                exp: p[1].trim() + "/" + p[2].trim()
+                number: parts[0].replace(/\s/g, ""),
+                exp: parts[1].padStart(2, "0") + "/" + parts[2].slice(-2)
             });
+            added += 1;
         }
     });
 
     document.getElementById("input").value = "";
     save();
     render();
+    showToast(added ? added + " cards added" : "No valid lines detected");
 }
 
 function use(i) {
     const c = cards[i];
+    if (!c) return;
 
+    selectedIndex = i;
     document.getElementById("num").value = c.number;
     document.getElementById("exp").value = c.exp;
     document.getElementById("cvc").value = "123";
+    updatePreview(c.number, c.exp, "Ready to execute");
+    updateSelectionBadge();
+    setResult("Card loaded into the form.", "");
+    document.getElementById("num").focus();
+    showToast("Card selected");
+}
+
+function handleNumInput(event) {
+    const digits = event.target.value.replace(/\D/g, "").slice(0, 16);
+    event.target.value = digits;
+    const exp = document.getElementById("exp").value;
+    updatePreview(digits, exp, digits ? "Editing details" : "Waiting for selection");
+}
+
+function handleExpInput(event) {
+    const formatted = formatExp(event.target.value);
+    event.target.value = formatted;
+    const num = document.getElementById("num").value;
+    updatePreview(num, formatted, num ? "Editing details" : "Waiting for selection");
 }
 
 function buildForm() {
     const form = document.createElement("form");
     form.id = "form";
+    form.className = "form-panel";
 
     form.innerHTML = `
-        <input id="num" placeholder="Card Number" autocomplete="cc-number">
-        <input id="exp" placeholder="MM/YY" autocomplete="cc-exp">
-        <input id="cvc" placeholder="CVC" autocomplete="cc-csc">
-        <button type="submit">EXECUTE PAYMENT</button>
+        <div class="form-group">
+            <label for="num">Card Number</label>
+            <input id="num" placeholder="4111111111111111" autocomplete="cc-number" inputmode="numeric">
+            <div class="input-hint">Selecciona una tarjeta de la lista o escribe una manualmente.</div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="exp">MM/YY</label>
+                <input id="exp" placeholder="02/28" autocomplete="cc-exp" inputmode="numeric">
+            </div>
+            <div class="form-group">
+                <label for="cvc">CVC</label>
+                <input id="cvc" placeholder="123" autocomplete="cc-csc" inputmode="numeric" maxlength="4">
+            </div>
+        </div>
+
+        <div class="amount-box">
+            <span>Execution mode</span>
+            <strong>Ready</strong>
+        </div>
+
+        <button type="submit" class="primary-btn" id="submitBtn">
+            <span id="submitText">EXECUTE PAYMENT</span>
+        </button>
+        <div class="result" id="result">Waiting for card input.</div>
     `;
 
     form.addEventListener("submit", onSubmit);
+    form.querySelector("#num").addEventListener("input", handleNumInput);
+    form.querySelector("#exp").addEventListener("input", handleExpInput);
+    form.querySelector("#cvc").addEventListener("input", (event) => {
+        event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
+    });
 
     return form;
 }
 
-function onSubmit(e) {
-    e.preventDefault();
+function resetFormWithFocus() {
+    const oldForm = document.getElementById("form");
+    const newForm = buildForm();
+    oldForm.replaceWith(newForm);
+    selectedIndex = null;
+    updatePreview("", "", "Waiting for selection");
+    updateSelectionBadge();
+    newForm.querySelector("#num").focus();
+}
 
-    const num = document.getElementById("num").value;
-    const index = cards.findIndex((c) => c.number === num);
+function onSubmit(event) {
+    event.preventDefault();
 
-    if (index !== -1) {
-        deleted.push(cards[index]);
-        cards.splice(index, 1);
-        save();
-        render();
+    const num = document.getElementById("num").value.replace(/\D/g, "");
+    const exp = formatExp(document.getElementById("exp").value);
+    const cvc = document.getElementById("cvc").value.replace(/\D/g, "");
+
+    if (num.length < 13) {
+        setResult("Card number is too short.", "error");
+        return;
     }
 
-    setTimeout(() => {
-        const oldForm = document.getElementById("form");
-        const newForm = buildForm();
+    if (!/^\d{2}\/\d{2}$/.test(exp)) {
+        setResult("Expiration must use MM/YY.", "error");
+        return;
+    }
 
-        oldForm.replaceWith(newForm);
-        newForm.querySelector("#num").focus();
-    }, 300);
+    const month = Number(exp.slice(0, 2));
+    if (month < 1 || month > 12) {
+        setResult("Invalid expiration month.", "error");
+        return;
+    }
+
+    if (cvc.length < 3) {
+        setResult("CVC must contain at least 3 digits.", "error");
+        return;
+    }
+
+    const button = document.getElementById("submitBtn");
+    const text = document.getElementById("submitText");
+    button.disabled = true;
+    text.textContent = "PROCESSING...";
+    setResult("Processing selected card...", "");
+    updatePreview(num, exp, "Processing");
+
+    setTimeout(() => {
+        const index = cards.findIndex((card) => card.number === num);
+
+        if (index !== -1) {
+            deleted.push(cards[index]);
+            cards.splice(index, 1);
+            save();
+            render();
+        }
+
+        setResult("Transaction processed correctly. Loading next card...", "success");
+        showToast("Card moved out of active list");
+        setTimeout(() => {
+            resetFormWithFocus();
+        }, 450);
+    }, 900);
 }
 
 function restore() {
@@ -231,18 +863,22 @@ function restore() {
     deleted = [];
     save();
     render();
+    showToast("Deleted cards restored");
 }
 
 function clearAll() {
     deleted = [...cards, ...deleted];
     cards = [];
+    selectedIndex = null;
     save();
     render();
+    updatePreview("", "", "Waiting for selection");
+    showToast("All active cards moved to deleted");
 }
 
 document.getElementById("formContainer").appendChild(buildForm());
 render();
+updatePreview("", "", "Waiting for selection");
 </script>
-
 </body>
 </html>
