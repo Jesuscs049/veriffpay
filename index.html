@@ -39,6 +39,7 @@ input, textarea {
     color: #00ff9f;
     padding: 10px;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
 button {
@@ -65,6 +66,7 @@ button:hover {
 .list::-webkit-scrollbar {
     width: 6px;
 }
+
 .list::-webkit-scrollbar-thumb {
     background: #00ff9f;
 }
@@ -72,6 +74,8 @@ button:hover {
 .item {
     display: flex;
     justify-content: space-between;
+    gap: 12px;
+    align-items: center;
     margin-bottom: 8px;
 }
 
@@ -82,18 +86,18 @@ button:hover {
 }
 
 a {
-    display:block;
-    text-align:center;
-    border:1px solid #00ff9f;
-    padding:10px;
-    margin-bottom:10px;
-    text-decoration:none;
-    color:#00ff9f;
+    display: block;
+    text-align: center;
+    border: 1px solid #00ff9f;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #00ff9f;
 }
 
 a:hover {
-    background:#00ff9f;
-    color:black;
+    background: #00ff9f;
+    color: black;
 }
 </style>
 </head>
@@ -104,21 +108,18 @@ a:hover {
 
 <div class="title">ADB MATRIX // MULTI CARD</div>
 
-<!-- LINKS -->
 <div class="card">
-<a href="https://payments.google.com/gp/w/home/settings" target="_blank">
-Añadir perfil de pagos
+<a href="https://payments.google.com/gp/w/home/settings" target="_blank" rel="noopener noreferrer">
+Anadir perfil de pagos
 </a>
 
-<a href="https://www.purevpn.com/order-v3" target="_blank">
-Ir a la página de pago
+<a href="https://www.purevpn.com/order-v3" target="_blank" rel="noopener noreferrer">
+Ir a la pagina de pago
 </a>
 </div>
 
-<!-- FORM DINÁMICO -->
 <div class="card" id="formContainer"></div>
 
-<!-- LISTA -->
 <div class="card">
 
 <textarea id="input" placeholder="numero|mes|año"></textarea>
@@ -139,21 +140,21 @@ Ir a la página de pago
 let cards = JSON.parse(localStorage.getItem("cards") || "[]");
 let deleted = JSON.parse(localStorage.getItem("deleted") || "[]");
 
-function save(){
+function save() {
     localStorage.setItem("cards", JSON.stringify(cards));
     localStorage.setItem("deleted", JSON.stringify(deleted));
 }
 
-function render(){
+function render() {
     const list = document.getElementById("list");
     list.innerHTML = "";
 
-    cards.forEach((c,i)=>{
+    cards.forEach((c, i) => {
         const div = document.createElement("div");
-        div.className="item";
+        div.className = "item";
 
         div.innerHTML = `
-            <span>${c.number.slice(0,6)}******${c.number.slice(-4)}</span>
+            <span>${c.number.slice(0, 6)}******${c.number.slice(-4)}</span>
             <button onclick="use(${i})">USE</button>
         `;
 
@@ -161,25 +162,25 @@ function render(){
     });
 }
 
-function add(){
+function add() {
     const lines = document.getElementById("input").value.split("\n");
 
-    lines.forEach(l=>{
+    lines.forEach((l) => {
         const p = l.split("|");
-        if(p.length>=2){
+        if (p.length >= 3) {
             cards.push({
-                number:p[0],
-                exp:p[1]+"/"+p[2]
+                number: p[0].trim(),
+                exp: p[1].trim() + "/" + p[2].trim()
             });
         }
     });
 
-    document.getElementById("input").value="";
+    document.getElementById("input").value = "";
     save();
     render();
 }
 
-function use(i){
+function use(i) {
     const c = cards[i];
 
     document.getElementById("num").value = c.number;
@@ -187,7 +188,7 @@ function use(i){
     document.getElementById("cvc").value = "123";
 }
 
-function buildForm(){
+function buildForm() {
     const form = document.createElement("form");
     form.id = "form";
 
@@ -203,47 +204,42 @@ function buildForm(){
     return form;
 }
 
-function onSubmit(e){
+function onSubmit(e) {
     e.preventDefault();
 
     const num = document.getElementById("num").value;
+    const index = cards.findIndex((c) => c.number === num);
 
-    const index = cards.findIndex(c => c.number === num);
-
-    if(index !== -1){
+    if (index !== -1) {
         deleted.push(cards[index]);
-        cards.splice(index,1);
+        cards.splice(index, 1);
         save();
         render();
     }
 
-    // 🔥 recrear formulario (clave)
-    setTimeout(()=>{
+    setTimeout(() => {
         const oldForm = document.getElementById("form");
         const newForm = buildForm();
 
         oldForm.replaceWith(newForm);
-
         newForm.querySelector("#num").focus();
-
-    },300);
+    }, 300);
 }
 
-function restore(){
+function restore() {
     cards = [...deleted, ...cards];
     deleted = [];
     save();
     render();
 }
 
-function clearAll(){
+function clearAll() {
     deleted = [...cards, ...deleted];
     cards = [];
     save();
     render();
 }
 
-// INIT
 document.getElementById("formContainer").appendChild(buildForm());
 render();
 </script>
