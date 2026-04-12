@@ -285,7 +285,7 @@ body::before {
 
 .form-row {
     display: grid;
-    grid-template-columns: 1fr 120px;
+    grid-template-columns: 1fr;
     gap: 12px;
 }
 
@@ -729,7 +729,6 @@ function use(i) {
     selectedIndex = i;
     document.getElementById("num").value = c.number;
     document.getElementById("exp").value = c.exp;
-    document.getElementById("cvc").value = "123";
     updatePreview(c.number, c.exp, "Ready to execute");
     updateSelectionBadge();
     setResult("Card loaded into the form.", "");
@@ -768,10 +767,6 @@ function buildForm() {
                 <label for="exp">MM/YY</label>
                 <input id="exp" placeholder="02/28" autocomplete="cc-exp" inputmode="numeric">
             </div>
-            <div class="form-group">
-                <label for="cvc">CVC</label>
-                <input id="cvc" placeholder="123" autocomplete="cc-csc" inputmode="numeric" maxlength="4">
-            </div>
         </div>
 
         <div class="amount-box">
@@ -788,9 +783,6 @@ function buildForm() {
     form.addEventListener("submit", onSubmit);
     form.querySelector("#num").addEventListener("input", handleNumInput);
     form.querySelector("#exp").addEventListener("input", handleExpInput);
-    form.querySelector("#cvc").addEventListener("input", (event) => {
-        event.target.value = event.target.value.replace(/\D/g, "").slice(0, 4);
-    });
 
     return form;
 }
@@ -810,7 +802,6 @@ function onSubmit(event) {
 
     const num = document.getElementById("num").value.replace(/\D/g, "");
     const exp = formatExp(document.getElementById("exp").value);
-    const cvc = document.getElementById("cvc").value.replace(/\D/g, "");
 
     if (num.length < 13) {
         setResult("Card number is too short.", "error");
@@ -825,11 +816,6 @@ function onSubmit(event) {
     const month = Number(exp.slice(0, 2));
     if (month < 1 || month > 12) {
         setResult("Invalid expiration month.", "error");
-        return;
-    }
-
-    if (cvc.length < 3) {
-        setResult("CVC must contain at least 3 digits.", "error");
         return;
     }
 
