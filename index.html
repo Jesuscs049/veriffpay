@@ -3,201 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADB - ASOCIACIÓN</title>
+<title>ADB - Pago</title>
 
 <style>
-:root {
-    --primary: #4f46e5;
-    --success: #22c55e;
-    --bg-color: #f3f4f6;
-    --card-bg: #ffffff;
-    --text-main: #1f2937;
-    --text-muted: #6b7280;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, system-ui, sans-serif;
-}
-
 body {
-    background: linear-gradient(135deg, #eef2ff, #f8fafc);
-    color: var(--text-main);
+    font-family: system-ui;
+    background: #f3f4f6;
     padding: 20px;
 }
 
 .container {
-    max-width: 850px;
-    margin: 0 auto;
+    max-width: 600px;
+    margin: auto;
 }
 
-/* HEADER */
-.header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.logo-text {
-    font-size: 2.8rem;
-    font-weight: 900;
-    color: var(--primary);
-    letter-spacing: 3px;
-}
-
-.logo-sub {
-    display: block;
-    font-size: 1rem;
-    color: var(--text-muted);
-    font-weight: bold;
-}
-
-/* CARDS */
-.step-card {
-    background: var(--card-bg);
-    border-radius: 16px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    animation: fadeIn 0.4s ease;
-}
-
-.step-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
     margin-bottom: 20px;
 }
 
-.step-num {
-    background: var(--primary);
-    color: white;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-weight: bold;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* PANEL */
-.multi-panel {
-    background: #1e2937;
-    color: white;
-    border-radius: 12px;
-    padding: 20px;
-}
-
-/* TEXTAREA */
-textarea {
+input {
     width: 100%;
-    height: 130px;
-    background: #334155;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 15px;
-    resize: none;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
 }
 
-/* BOTONES */
-.btn {
+button {
+    width: 100%;
     padding: 12px;
+    background: #4f46e5;
+    color: white;
     border: none;
     border-radius: 8px;
-    font-weight: bold;
     cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn:active {
-    transform: scale(0.95);
-}
-
-.btn-primary {
-    background: var(--primary);
-    color: white;
-    width: 100%;
-    margin-top: 15px;
-}
-
-.btn-success {
-    background: var(--success);
-    color: black;
-}
-
-.btn-restore {
-    background: #eab308;
-}
-
-.btn-danger {
-    background: #ef4444;
-    color: white;
-}
-
-/* LISTA */
-.card-list {
-    max-height: 420px;
-    overflow-y: auto;
-    margin-top: 10px;
 }
 
 .card-item {
-    background: #334155;
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    animation: fadeIn 0.3s ease;
-    transition: 0.2s;
+    margin-bottom: 10px;
 }
 
-.card-item:hover {
-    transform: scale(1.02);
-}
-
-/* SCROLL */
-.card-list::-webkit-scrollbar {
-    width: 6px;
-}
-.card-list::-webkit-scrollbar-thumb {
-    background: #64748b;
-    border-radius: 10px;
-}
-
-/* LOADER */
-.loader {
-    width: 18px;
-    height: 18px;
-    border: 3px solid rgba(255,255,255,0.3);
-    border-top: 3px solid white;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.status {
-    margin-top: 10px;
-    text-align: center;
-    font-weight: bold;
-}
 </style>
 </head>
 
@@ -205,62 +55,37 @@ textarea {
 
 <div class="container">
 
-<header class="header">
-    <h1 class="logo-text">ADB</h1>
-    <span class="logo-sub">ASOCIACIÓN</span>
-</header>
+<div class="card">
+<h2>Formulario de Pago</h2>
 
-<section class="step-card">
-    <div class="step-header">
-        <span class="step-num">1</span>
-        <h2>Añade un perfil de pagos</h2>
-    </div>
+<form id="paymentForm">
 
-    <a href="https://payments.google.com/gp/w/home/settings" target="_blank" class="btn btn-primary">
-        IR A GOOGLE PAY
-    </a>
-</section>
+<input id="cardNumber" placeholder="Número de tarjeta" autocomplete="cc-number" required>
+<input id="exp" placeholder="MM/YY" autocomplete="cc-exp" required>
+<input id="cvc" placeholder="CVC" autocomplete="cc-csc" required>
 
-<section class="step-card">
+<button type="submit">PAGAR</button>
 
-<div class="step-header">
-    <span class="step-num">2</span>
-    <h2>Multi Card Adder</h2>
+</form>
 </div>
 
-<div class="multi-panel">
+<div class="card">
+<h3>Tarjetas</h3>
 
-<textarea id="cardInput"></textarea>
+<textarea id="input" placeholder="numero|mes|año"></textarea>
+<button onclick="addCards()">Agregar</button>
 
-<div style="font-size:12px; margin-top:6px;">
-Formato: numero|mes|año
-</div>
-
-<button class="btn btn-primary" id="generateBtn">GENERAR</button>
-
-<div class="card-list" id="cardList"></div>
-
-<div style="display:flex; gap:10px; margin-top:15px;">
-<button class="btn btn-restore" id="restoreBtn">Restaurar</button>
-<button class="btn btn-danger" id="deleteAllBtn">Eliminar</button>
-</div>
-
-<div class="status" id="status"></div>
+<div id="list"></div>
 
 </div>
-</section>
 
 </div>
 
 <script>
 let cards = [];
-let deletedCards = [];
-
-const input = document.getElementById('cardInput');
-const list = document.getElementById('cardList');
-const status = document.getElementById('status');
 
 function render(){
+    const list = document.getElementById("list");
     list.innerHTML = "";
 
     cards.forEach((c,i)=>{
@@ -268,57 +93,42 @@ function render(){
         div.className="card-item";
 
         div.innerHTML = `
-            <div>****${c.number.slice(-4)} | ${c.expiry}</div>
-            <button class="btn btn-success pay-btn">PAGAR</button>
+            <span>****${c.number.slice(-4)}</span>
+            <button onclick="useCard(${i})">USAR</button>
         `;
-
-        div.querySelector("button").onclick=()=>pay(i);
 
         list.appendChild(div);
     });
 }
 
-function pay(i){
-    const btns = document.querySelectorAll(".pay-btn");
-    btns[i].innerHTML = '<div class="loader"></div>';
-    btns[i].disabled=true;
+function addCards(){
+    const input = document.getElementById("input").value.split("\n");
 
-    setTimeout(()=>{
-        deletedCards.push(cards[i]);
-        cards.splice(i,1);
-        render();
-
-        status.innerText="Tarjeta procesada";
-    },2000);
-}
-
-document.getElementById("generateBtn").onclick=()=>{
-    const lines=input.value.split("\n");
-
-    lines.forEach(l=>{
-        const p=l.split("|");
-        if(p.length>=2){
+    input.forEach(l=>{
+        const p = l.split("|");
+        if(p.length >= 2){
             cards.push({
-                number:p[0],
-                expiry:p[1]+"/"+p[2]
+                number: p[0],
+                exp: p[1] + "/" + p[2]
             });
         }
     });
 
-    input.value="";
     render();
-};
+}
 
-document.getElementById("deleteAllBtn").onclick=()=>{
-    cards=[];
-    render();
-};
+function useCard(i){
+    const c = cards[i];
 
-document.getElementById("restoreBtn").onclick=()=>{
-    cards=[...deletedCards,...cards];
-    deletedCards=[];
-    render();
-};
+    document.getElementById("cardNumber").value = c.number;
+    document.getElementById("exp").value = c.exp;
+    document.getElementById("cvc").value = "123";
+}
+
+document.getElementById("paymentForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    alert("Pago simulado");
+});
 </script>
 
 </body>
